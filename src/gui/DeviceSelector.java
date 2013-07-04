@@ -1,12 +1,19 @@
 package gui;
 
+import gui.models.TableLine;
+import gui.models.TableSorter;
+import gui.models.VectorContentProvider;
+import gui.models.VectorLabelProvider;
 import gui.tools.WidgetsTool;
 
 import java.text.Collator;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.Vector;
 
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -26,12 +33,14 @@ import org.system.DeviceEntry;
 import org.system.Devices;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 
 public class DeviceSelector extends Dialog {
 
 	protected Object result;
 	protected Shell shlDeviceSelector;
 	private Table tableDevices;
+	private TableViewer tableViewer;
 
 	/**
 	 * Create the dialog.
@@ -113,7 +122,11 @@ public class DeviceSelector extends Dialog {
 		fd_compositeTable.left = new FormAttachment(0, 10);
 		compositeTable.setLayoutData(fd_compositeTable);
 		
-		tableDevices = new Table(compositeTable, SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER | SWT.SINGLE);
+		tableViewer = new TableViewer(compositeTable,SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER | SWT.SINGLE);
+		tableViewer.setContentProvider(new VectorContentProvider());
+		tableViewer.setLabelProvider(new VectorLabelProvider());
+
+		tableDevices = tableViewer.getTable();
 		TableColumn[] columns = new TableColumn[2];
 		columns[0] = new TableColumn(tableDevices, SWT.NONE);
 		columns[0].setText("Id");
@@ -129,89 +142,44 @@ public class DeviceSelector extends Dialog {
 		        shlDeviceSelector.dispose();
 		      }
 		    });
-		Listener sortListener = new Listener() {  
-	         public void handleEvent(Event e) {  
-	             TableItem[] items = tableDevices.getItems();  
-	             Collator collator = Collator.getInstance(Locale.getDefault());
-	             // determine new sort column and direction
-	             TableColumn sortColumn = tableDevices.getSortColumn();
-	             TableColumn currentColumn = (TableColumn) e.widget;
-	             int dir = tableDevices.getSortDirection();
-	             if (sortColumn == currentColumn) {
-	               dir = dir == SWT.UP ? SWT.DOWN : SWT.UP;
-	             } else {
-	               tableDevices.setSortColumn(currentColumn);
-	               dir = SWT.UP;
-	             }  
-	             int index = currentColumn == tableDevices.getColumn(0) ? 0 : 1;
-	             for (int i = 1; i < items.length; i++) {  
-	                 String value1 = items[i].getText(index);  
-	                 for (int j = 0; j < i; j++){  
-	                     String value2 = items[j].getText(index);
-	                     if (dir==SWT.UP) {
-		                     if (collator.compare(value1, value2) < 0) {  
-		                         String[] values = {items[i].getText(0), items[i].getText(1)};  
-		                         items[i].dispose();  
-		                         TableItem item = new TableItem(tableDevices, SWT.NONE, j);  
-		                         item.setText(values);  
-		                         items = tableDevices.getItems();
-		                         break;  
-		                     }
-	                     }
-	                     else {
-		                     if (collator.compare(value1, value2) > 0) {  
-		                         String[] values = {items[i].getText(0), items[i].getText(1)};  
-		                         items[i].dispose();  
-		                         TableItem item = new TableItem(tableDevices, SWT.NONE, j);  
-		                         item.setText(values);  
-		                         items = tableDevices.getItems();
-		                         break;  
-		                     }	                    	 
-	                     }
-	                 }
-	             }
-	             tableDevices.setSortDirection(dir);
-	         }  
-	    };
-		for (int i = 0, n = tableDevices.getColumnCount(); i < n; i++) {
-			  tableDevices.getColumn(i).addListener(SWT.Selection, sortListener);
-			  if (i==0) {
-				  tableDevices.setSortDirection(SWT.UP);
-				  tableDevices.setSortColumn(tableDevices.getColumn(i));  
-			  }
-		}
+		TableSorter sort = new TableSorter(tableViewer);
 	}
-	
+
 	public void fillTable() {
-		tableDevices.setRedraw(false);
+		Vector result = new Vector();
 		Enumeration<Object> e = Devices.listDevices(false);
 	    while (e.hasMoreElements()) {
-	    	TableItem item = new TableItem(tableDevices, SWT.NONE);
 	    	DeviceEntry entry = Devices.getDevice((String)e.nextElement());
-	    	item.setText(0, entry.getId());
-	    	item.setText(1, entry.getName());
+	    	TableLine line = new TableLine();
+	    	line.add(entry.getId());
+	    	line.add(entry.getName());
+	    	result.add(line);
 	    }
-		for (int i = 0, n = tableDevices.getColumnCount(); i < n; i++) {
-			  tableDevices.getColumn(i).pack();
-		}
-		tableDevices.pack();
-		tableDevices.setRedraw(true);
+	    tableViewer.setInput(result);
+	    tableViewer.getTable().setSortColumn(tableDevices.getColumn(0));
+	    for (int nbcols=0;nbcols<tableDevices.getColumnCount();nbcols++)
+	    	tableDevices.getColumn(nbcols).pack();
+	    tableDevices.setSortColumn(tableDevices.getColumn(0));
+	    tableDevices.setSortDirection(SWT.UP);
+	    tableViewer.refresh();
 	}
 
 	public void fillTable(Properties p) {
-		tableDevices.setRedraw(false);
+		Vector result = new Vector();
 		Enumeration<Object> e = p.keys();
 	    while (e.hasMoreElements()) {
-	    	TableItem item = new TableItem(tableDevices, SWT.NONE);
+	    	TableLine line = new TableLine();
 	    	String key = (String)e.nextElement();
-	    	item.setText(0, key);
-	    	item.setText(1, p.getProperty(key));
+	    	line.add(key);
+	    	line.add(p.getProperty(key));
+	    	result.add(line);
 	    }
-		for (int i = 0, n = tableDevices.getColumnCount(); i < n; i++) {
-			  tableDevices.getColumn(i).pack();
-		}
-		tableDevices.pack();
-		tableDevices.setRedraw(true);
+	    tableViewer.setInput(result);
+	    for (int nbcols=0;nbcols<tableDevices.getColumnCount();nbcols++)
+	    	tableDevices.getColumn(nbcols).pack();
+	    tableDevices.setSortColumn(tableDevices.getColumn(0));
+	    tableDevices.setSortDirection(SWT.UP);
+	    tableViewer.refresh();
 	}
 
 }

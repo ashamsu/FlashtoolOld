@@ -199,7 +199,7 @@ public class DeviceEntry {
 	}
 
 	public boolean canRecovery() {
-		return (_entry.getProperty("canrecovery").equals("true"));
+		return (new File(Devices.getCurrent().getDeviceDir()+File.separator+"bootkit").exists());
 	}
 
 	public boolean canFastboot() {
@@ -256,6 +256,10 @@ public class DeviceEntry {
     
     public String getSerial() {
     	return AdbUtility.getDevices().nextElement();
+    }
+    
+    public boolean canShowUpdates() {
+    	return new File(getDeviceDir()+File.separator+"updates").exists();
     }
 
 }
