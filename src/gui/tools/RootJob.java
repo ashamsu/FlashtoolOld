@@ -54,6 +54,8 @@ public class RootJob extends Job {
     			doRootAdbRestore();
     		if (_action.equals("doRootServiceMenu"))
     			doRootServiceMenu();
+    		if (_action.equals("doRootPerfEvent"))
+    			doRootPerfEvent();
     		return Status.OK_STATUS;
     	}
     	catch (Exception e) {
@@ -277,6 +279,31 @@ public class RootJob extends Job {
 					FTShell shell = new FTShell("rebootservicemenu");
 					shell.runRoot();
 					shell.clean();
+				}
+			}
+			else {
+				MyLogger.getLogger().info("Canceled");
+			}
+		}
+		catch (Exception e) {
+			MyLogger.getLogger().error(e.getMessage());
+		}
+	}
+
+	public void doRootPerfEvent() {
+		try {
+			if (pck.length()>0) {
+				doPushRootFiles(pck,false);
+				AdbUtility.push(OS.getWorkDir()+File.separator+"custom"+File.separator+"root"+File.separator+"perfevent"+File.separator+"doomed2", "/data/local/tmp/");
+				AdbUtility.push(OS.getWorkDir()+File.separator+"custom"+File.separator+"root"+File.separator+"perfevent"+File.separator+"run_root_shell", "/data/local/tmp/");
+				AdbUtility.run("chmod 755 /data/local/tmp/doomed2");
+				AdbUtility.run("chmod 755 /data/local/tmp/run_root_shell");
+				AdbUtility.run("/data/local/tmp/run_root_shell");
+				if (AdbUtility.hasRootPerms()) {
+					MyLogger.getLogger().info("Device rooted. Now cleaning and rebooting. Please wait");
+					//FTShell shell = new FTShell("rebootperfevent");
+					//shell.runRoot();
+					//shell.clean();
 				}
 			}
 			else {
