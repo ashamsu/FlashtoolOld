@@ -1,6 +1,7 @@
 package flashsystem;
 
 import gui.tools.FirmwareFileFilter;
+
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -9,7 +10,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 import java.util.jar.JarEntry;
@@ -17,8 +22,11 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.Deflater;
+
 import org.logger.MyLogger;
 import org.system.OS;
+
+import com.turn.ttorrent.common.Torrent;
 
 public final class Bundle {
 
@@ -230,6 +238,23 @@ public final class Bundle {
 		}
 		out.close();
 	    stream.close();
+	    MyLogger.getLogger().info("Creating torrent file : "+ftf.getAbsolutePath()+".torrent");
+	    List<URI> l1 = new ArrayList<URI>();
+	    List<URI> l2 = new ArrayList<URI>();
+	    List<URI> l3 = new ArrayList<URI>();
+	    l1.add(new URI("udp://tracker.openbittorrent.com:80/announce"));
+	    l2.add(new URI("udp://tracker.publicbt.com:80/announce"));
+	    l3.add(new URI("udp://tracker.ccc.de:80/announce"));
+	    List<List<URI>> parent = new ArrayList<List<URI>>();
+	    parent.add(l1);
+	    parent.add(l2);
+	    parent.add(l3);
+	    Torrent torrent = Torrent.create(ftf, null, new URI("udp://tracker.openbittorrent.com:80/announce"), parent, "FlashTool");
+	    FileOutputStream fout =new FileOutputStream(new File(ftf.getAbsolutePath()+".torrent")); 
+	    torrent.save(fout);
+	    fout.flush();
+	    fout.close();
+	    MyLogger.getLogger().info("Torrent file creation finished");
 	    MyLogger.initProgress(0);
 	}
 
