@@ -141,27 +141,32 @@ Section /o "Xperia Tablet Z drivers SGP311, SGP312, UsbD" SEC20
   File /r "Drivers\ADB\Xperia_Tablet_Z-drivers-SGP311_SGP312_UsbD\*"
 SectionEnd
 
-Section /o "Xperia Z Ultra drivers" SEC19
+Section /o "Xperia Z Ultra drivers" SEC21
   SetOutPath "$TEMP\Flashtool\ADB\Xperia_Z_Ultra_driver"
   File /r "Drivers\ADB\Xperia_Z_Ultra_driver\*"
 SectionEnd
 
-Section /o "Xperia UL Drivers" SEC21
+Section /o "Xperia™ Z Ultra XL39h driver" SEC22
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia™ Z Ultra XL39h driver"
+  File /r "Drivers\ADB\Xperia™ Z Ultra XL39h driver\*"
+SectionEnd
+
+Section /o "Xperia UL Drivers" SEC23
   SetOutPath "$TEMP\Flashtool\ADB\Xperia UL Drivers"
   File /r "Drivers\ADB\Xperia UL Drivers\*"
 SectionEnd
 
-Section /o "Xperia A driver" SEC22
+Section /o "Xperia A driver" SEC24
   SetOutPath "$TEMP\Flashtool\ADB\Xperia A driver"
   File /r "Drivers\ADB\Xperia A driver\*"
 SectionEnd
 
-Section /o "Flashmode Drivers" SEC23
+Section /o "Flashmode Drivers" SEC25
   SetOutPath "$TEMP\Flashtool\GordonGate"
   File /r "Drivers\GordonGate\*"
 SectionEnd
 
-Section /o "Fastboot Drivers" SEC24
+Section /o "Fastboot Drivers" SEC26
   SetOutPath "$TEMP\Flashtool\Fastboot"
   File /r "Drivers\FASTBOOT\*"
 SectionEnd
