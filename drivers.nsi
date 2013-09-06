@@ -151,22 +151,30 @@ Section /o "Xperia™ Z Ultra XL39h driver" SEC22
   File /r "Drivers\ADB\Xperia™ Z Ultra XL39h driver\*"
 SectionEnd
 
-Section /o "Xperia UL Drivers" SEC23
+Section /o "Xperia™ Z1 driver" SEC23
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia™ Z1 driver"
+  File /r "Drivers\ADB\Xperia™ Z1 driver\*"
+  
+Section /o "Xperia™ Z1 L39h driver" SEC24
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia™ Z1 L39h driver"
+  File /r "Drivers\ADB\Xperia™ Z1 L39h driver\*"
+  
+Section /o "Xperia UL Drivers" SEC25
   SetOutPath "$TEMP\Flashtool\ADB\Xperia UL Drivers"
   File /r "Drivers\ADB\Xperia UL Drivers\*"
 SectionEnd
 
-Section /o "Xperia A driver" SEC24
+Section /o "Xperia A driver" SEC26
   SetOutPath "$TEMP\Flashtool\ADB\Xperia A driver"
   File /r "Drivers\ADB\Xperia A driver\*"
 SectionEnd
 
-Section /o "Flashmode Drivers" SEC25
+Section /o "Flashmode Drivers" SEC27
   SetOutPath "$TEMP\Flashtool\GordonGate"
   File /r "Drivers\GordonGate\*"
 SectionEnd
 
-Section /o "Fastboot Drivers" SEC26
+Section /o "Fastboot Drivers" SEC28
   SetOutPath "$TEMP\Flashtool\Fastboot"
   File /r "Drivers\FASTBOOT\*"
 SectionEnd
