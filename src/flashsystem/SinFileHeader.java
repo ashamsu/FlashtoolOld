@@ -2,7 +2,6 @@ package flashsystem;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.Vector;
 import org.logger.MyLogger;
 

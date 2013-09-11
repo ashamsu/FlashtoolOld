@@ -1,21 +1,11 @@
 package gui.tools;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Properties;
-import org.adb.AdbUtility;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Shell;
 import org.logger.MyLogger;
-import org.system.Devices;
 import org.system.OS;
-import org.system.TextFile;
 
 public class Yaffs2Job extends Job {
 

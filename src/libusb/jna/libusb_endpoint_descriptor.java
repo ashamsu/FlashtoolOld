@@ -5,8 +5,6 @@ import java.util.List;
 
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
-import com.sun.jna.Structure.ByReference;
-import com.sun.jna.Structure.ByValue;
 
 public class libusb_endpoint_descriptor extends Structure
 {

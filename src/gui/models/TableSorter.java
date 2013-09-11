@@ -1,7 +1,6 @@
 package gui.models;
 
 import java.util.Arrays;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;

@@ -1,21 +1,11 @@
 package gui;
 
-import gui.models.Firmware;
-import gui.models.Firmwares;
-import gui.tools.FtfFilter;
 import gui.tools.WidgetTask;
 import gui.tools.WidgetsTool;
 
-import java.io.File;
-import java.util.Iterator;
 import java.util.Vector;
-import java.util.jar.JarFile;
-
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.layout.FormLayout;
@@ -24,23 +14,8 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.List;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.ListViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.GridData;
-import org.system.OS;
 
 public class TABackupSet extends Dialog {
 

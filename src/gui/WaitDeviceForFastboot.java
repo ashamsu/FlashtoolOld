@@ -11,9 +11,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import flashsystem.X10flash;
 import gui.tools.SearchFastbootJob;
-import gui.tools.SearchJob;
 import gui.tools.WidgetsTool;
 import org.eclipse.swt.widgets.Label;
 

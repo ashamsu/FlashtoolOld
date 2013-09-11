@@ -67,6 +67,10 @@ public class SeusSinTool {
 	        fdek.delete();
 	        File ftar = new File(basefile+".zip");
 	        ftar.delete();
+	        if (new File(folder+File.separator+"boot.zip").exists()) {
+	        	OS.ZipExplode(folder+File.separator+"boot.zip");
+	        	new File(folder+File.separator+"boot.zip").delete();
+	        }
 	      } catch(IOException e) {}
 	}
 

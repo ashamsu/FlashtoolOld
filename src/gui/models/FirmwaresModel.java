@@ -17,7 +17,7 @@ public class FirmwaresModel {
 					JarFile jf = new JarFile(chld[i]);
 					firmwares.add(new Firmware(chld[i].getAbsolutePath(),jf.getManifest().getMainAttributes().getValue("device"), jf.getManifest().getMainAttributes().getValue("version"), jf.getManifest().getMainAttributes().getValue("branding")));
 				}
-				catch (Exception e) {}
+				catch (Exception e) {e.printStackTrace();}
 			}
 	  }
 

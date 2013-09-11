@@ -10,7 +10,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.IOException;
 
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.logger.MyLogger;
 import org.system.Device;
@@ -19,7 +18,9 @@ import org.system.DeviceEntry;
 import org.system.Devices;
 import org.system.OS;
 import org.system.TextFile;
+
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Vector;
 
 public class X10flash {
@@ -315,21 +316,25 @@ public class X10flash {
     }
     
     public void sendImages() throws FileNotFoundException, IOException,X10FlashException {
-		for (int i = 1;i<=_bundle.getMeta().getNbCategs();i++) {
-			String categ = _bundle.getMeta().getCagorie(i);
-			if (_bundle.getMeta().isCategEnabled(categ)) {
-				Enumeration entries = _bundle.getMeta().getEntriesOf(categ,true);
-				while (entries.hasMoreElements()) {
-					String entry = (String)entries.nextElement();
-					BundleEntry bent = _bundle.getEntry(entry);
-					MyLogger.getLogger().info("Processing "+bent.getName());
-					SinFile sin = new SinFile(bent.getAbsolutePath());
-					sin.setChunkSize(maxpacketsize);
-					uploadImage(sin);
-					MyLogger.getLogger().debug("Flashing "+bent.getName()+" finished");
-				}
-			}
-		}
+    	Iterator<Integer> orderlist = _bundle.getMeta().getOrder();
+    	while (orderlist.hasNext()) {
+    		int place = orderlist.next();
+    		if (place>0) {
+    			String categ = _bundle.getMeta().getCagorie(place);
+    			if (_bundle.getMeta().isCategEnabled(categ)) {
+    				Enumeration entries = _bundle.getMeta().getEntriesOf(categ,true);
+    				while (entries.hasMoreElements()) {
+    					String entry = (String)entries.nextElement();
+    					BundleEntry bent = _bundle.getEntry(entry);
+    					MyLogger.getLogger().info("Processing "+bent.getName());
+    					SinFile sin = new SinFile(bent.getAbsolutePath());
+    					sin.setChunkSize(maxpacketsize);
+    					uploadImage(sin);
+    					MyLogger.getLogger().debug("Flashing "+bent.getName()+" finished");
+    				}
+    			}    			
+    		}
+    	}
     }
 
     public String getPhoneProperty(String property) {
@@ -348,6 +353,22 @@ public class X10flash {
     	taopen = false;
     }
    
+    public void sendBootBundle(InputStream is, String name) {
+    	System.out.println(name);
+    }
+    
+    public void sendBootBundleFiles() throws FileNotFoundException, IOException,X10FlashException {
+    	if (_bundle.hasBootzip()) {
+    		Enumeration entries = _bundle.getMeta().getEntriesOf("BOOTBUNDLE",true);
+    		while (entries.hasMoreElements()) {
+    			String entry = (String)entries.nextElement();
+    			BundleEntry bent = _bundle.getEntry(entry);
+    			sendBootBundle(bent.getInputStream(),bent.getName());
+    			MyLogger.getLogger().debug("Flashing "+bent.getName()+" finished");
+    		}    		
+    	}
+    }
+    
     public void sendTAFiles() throws FileNotFoundException, IOException,X10FlashException {
 		Enumeration entries = _bundle.getMeta().getEntriesOf("TA",true);
 		while (entries.hasMoreElements()) {
@@ -388,6 +409,7 @@ public class X10flash {
 		    	MyLogger.getLogger().info("Disabling final data verification check");
 		    	cmd.send(Command.CMD25, Command.DISABLEFINALVERIF, false);
 		    }
+		    sendBootBundleFiles();
 		    setFlashState(true);
 		    sendPartition();
 		    sendTAFiles();

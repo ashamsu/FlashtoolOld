@@ -11,7 +11,6 @@ import gui.tools.WidgetsTool;
 import gui.tools.createFTFJob;
 
 import java.io.File;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -45,9 +44,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
 import org.system.DeviceEntry;
 import org.system.OS;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.layout.RowData;
 
 public class BundleCreator extends Dialog {
 
@@ -112,10 +108,19 @@ public class BundleCreator extends Dialog {
 		File srcdir = new File(sourceFolder.getText());
 		File[] chld = srcdir.listFiles();
 		for(int i = 0; i < chld.length; i++) {
-			if (chld[i].getName().toUpperCase().endsWith("SIN") || chld[i].getName().toUpperCase().endsWith("TA")) {
+			if (chld[i].getName().toUpperCase().endsWith("SIN") || chld[i].getName().toUpperCase().endsWith("TA") || chld[i].getName().toUpperCase().endsWith("XML")) {
 				files.add(chld[i]);
 			}
 		}
+		srcdir = new File(sourceFolder.getText()+File.separator+"boot");
+		if (srcdir.exists()) {
+			chld = srcdir.listFiles();
+			for(int i = 0; i < chld.length; i++) {
+				if (chld[i].getName().toUpperCase().endsWith("SIN") || chld[i].getName().toUpperCase().endsWith("TA") || chld[i].getName().toUpperCase().endsWith("XML")) {
+					files.add(chld[i]);
+				}
+			}
+		}		
 		model.refresh(meta);
 		treeViewerCategories.setInput(model);
 		listViewerFiles.setInput(files);
@@ -304,7 +309,7 @@ public class BundleCreator extends Dialog {
 						meta.process(f.getName(), f.getAbsolutePath());
 						model.refresh(meta);
 						treeViewerCategories.setInput(model);
-					} catch (Exception ex) {}
+					} catch (Exception ex) {ex.printStackTrace();}
 					treeViewerCategories.setAutoExpandLevel(2);
 					treeViewerCategories.refresh();
 					listViewerFiles.refresh();
@@ -407,9 +412,18 @@ public class BundleCreator extends Dialog {
 		    			File srcdir = new File(sourceFolder.getText());
 		    			File[] chld = srcdir.listFiles();
 		    			for(int i = 0; i < chld.length; i++) {
-		    				if (chld[i].getName().toUpperCase().endsWith("SIN") || chld[i].getName().toUpperCase().endsWith("TA")) {
+		    				if (chld[i].getName().toUpperCase().endsWith("SIN") || chld[i].getName().toUpperCase().endsWith("TA") || chld[i].getName().toUpperCase().endsWith("XML")) {
 		    					files.add(chld[i]);
 		    				}
+		    			}
+		    			srcdir = new File(sourceFolder.getText()+File.separator+"boot");
+		    			if (srcdir.exists()) {
+		    				chld = srcdir.listFiles();
+			    			for(int i = 0; i < chld.length; i++) {
+			    				if (chld[i].getName().toUpperCase().endsWith("SIN") || chld[i].getName().toUpperCase().endsWith("TA") || chld[i].getName().toUpperCase().endsWith("XML")) {
+			    					files.add(chld[i]);
+			    				}
+			    			}
 		    			}
 		    			model.refresh(meta);
 		    			treeViewerCategories.setInput(model);

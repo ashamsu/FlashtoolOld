@@ -1,7 +1,6 @@
 package gui;
 
 import org.eclipse.swt.widgets.Dialog;
-import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -21,7 +20,6 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.wb.swt.SWTResourceManager;
 import org.logger.MyLogger;
 
 public class SinEditor extends Dialog {

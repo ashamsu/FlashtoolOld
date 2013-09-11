@@ -1,8 +1,5 @@
 package gui.models;
 
-import java.util.Properties;
-import java.util.Vector;
-
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;

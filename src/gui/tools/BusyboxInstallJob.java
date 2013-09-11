@@ -10,8 +10,6 @@ import org.system.Devices;
 import org.system.GlobalConfig;
 import org.system.FTShell;
 
-import flashsystem.X10flash;
-
 public class BusyboxInstallJob extends Job {
 
 	String bbpath;

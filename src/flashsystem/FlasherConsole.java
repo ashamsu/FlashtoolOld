@@ -1,9 +1,6 @@
 package flashsystem;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Properties;
@@ -12,7 +9,6 @@ import gui.MainSWT;
 import org.adb.AdbUtility;
 import org.logger.MyLogger;
 import org.system.AdbPhoneThread;
-import org.system.ClassPath;
 import org.system.DeviceChangedListener;
 import org.system.DeviceEntry;
 import org.system.DeviceProperties;

@@ -6,14 +6,11 @@ import gui.models.VectorContentProvider;
 import gui.models.VectorLabelProvider;
 import gui.tools.WidgetsTool;
 
-import java.text.Collator;
 import java.util.Enumeration;
-import java.util.Locale;
 import java.util.Properties;
 import java.util.Vector;
 
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -33,7 +30,6 @@ import org.system.DeviceEntry;
 import org.system.Devices;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 
 public class DeviceSelector extends Dialog {
 

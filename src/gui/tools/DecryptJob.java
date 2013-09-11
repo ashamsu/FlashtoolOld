@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.swt.widgets.Shell;
 import org.logger.MyLogger;
 
 public class DecryptJob extends Job {
@@ -26,12 +25,10 @@ public class DecryptJob extends Job {
 	
     protected IStatus run(IProgressMonitor monitor) {
     	try {
-    		String folder = "";
 			for (int i=0;i<files.size();i++) {
 				File f = (File)files.get(i);
 				MyLogger.getLogger().info("Decrypting "+f.getName());
         		SeusSinTool.decrypt(f.getAbsolutePath());
-        		folder = f.getParent();
 			}
 			MyLogger.getLogger().info("Decryption finished");
 			return Status.OK_STATUS;

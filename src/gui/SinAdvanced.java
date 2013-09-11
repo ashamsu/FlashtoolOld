@@ -1,7 +1,5 @@
 package gui;
 
-import java.io.File;
-
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
@@ -16,17 +14,10 @@ import org.eclipse.swt.events.SelectionEvent;
 import flashsystem.HexDump;
 import flashsystem.SinFile;
 import gui.tools.CreateSinAsJob;
-import gui.tools.ExtractSinDataJob;
 import gui.tools.WidgetsTool;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.GridData;
-import org.logger.MyLogger;
-import org.system.OS;
-import org.system.ProcessBuilderWrapper;
 
 public class SinAdvanced extends Dialog {
 

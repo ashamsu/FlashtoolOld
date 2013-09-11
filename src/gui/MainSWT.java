@@ -379,8 +379,6 @@ public class MainSWT {
 						}
 
 						public void done(IJobChangeEvent event) {
-				    		//BundleCreator cre = new BundleCreator(shlSonyericsson,SWT.PRIMARY_MODAL | SWT.SHEET);
-				    		//String result = (String)cre.open(folder);
 							String result = WidgetTask.openBundleCreator(shlSonyericsson,folder);
 							if (result.equals("Cancel"))
 								MyLogger.getLogger().info("Bundle creation canceled");

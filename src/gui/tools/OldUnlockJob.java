@@ -2,7 +2,6 @@ package gui.tools;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileWriter;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -12,12 +11,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.logger.MyLogger;
-import org.system.DeviceChangedListener;
 import org.system.DeviceEntry;
 import org.system.Devices;
 import org.system.FTShell;
 import org.system.GlobalConfig;
-import org.system.OS;
 
 
 public class OldUnlockJob extends Job {

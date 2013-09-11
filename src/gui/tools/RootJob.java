@@ -2,7 +2,6 @@ package gui.tools;
 
 import java.io.File;
 import org.adb.AdbUtility;
-import org.adb.FastbootUtility;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -13,7 +12,6 @@ import org.system.Devices;
 import org.system.FTShell;
 import org.system.GlobalConfig;
 import org.system.OS;
-import org.system.RunOutputs;
 
 public class RootJob extends Job {
 

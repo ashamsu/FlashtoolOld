@@ -1,7 +1,6 @@
 package flashsystem;
 
 import java.io.IOException;
-import java.util.Vector;
 import org.logger.MyLogger;
 import flashsystem.io.USBFlash;
 

@@ -1,6 +1,5 @@
 package gui;
 
-import flashsystem.X10flash;
 import gui.models.TableLine;
 import gui.models.TableSorter;
 import gui.models.VectorContentProvider;
@@ -10,9 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.Collator;
 import java.util.Iterator;
-import java.util.Locale;
 import java.util.Scanner;
 import java.util.Vector;
 
@@ -23,25 +20,17 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.jdom.JDOMException;
 import org.system.DeviceEntry;
-import org.system.Devices;
-import org.system.OS;
 import org.system.PropertiesFile;
 import org.system.TextFile;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 

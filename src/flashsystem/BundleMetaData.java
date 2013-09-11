@@ -1,10 +1,14 @@
 package flashsystem;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Vector;
+import java.util.TreeMap;
+
 import org.jdom.Element;
 import org.jdom.Document;
 import org.jdom.output.XMLOutputter;
@@ -19,35 +23,49 @@ public class BundleMetaData {
 	Properties _categex = new Properties();
 	Properties _categwipe = new Properties();
 	Properties _enabled = new Properties();
-	Properties _catorders = new Properties();
+	TreeMap<Integer,String> _catorders = new TreeMap<Integer,String>();
 	
 	public BundleMetaData() {
 		_categex.setProperty("SYSTEM", "Exclude system");
+		_categex.setProperty("BOOT", "Exclude boot");
+		_categex.setProperty("BOOTBUNDLE", "Exclude boot bundle");
+		_categex.setProperty("ELABEL", "Exclude elabel");
 		_categex.setProperty("BASEBAND", "Exclude baseband");
 		_categex.setProperty("KERNEL", "Exclude kernel");
 		_categex.setProperty("PARTITION", "Exclude partition");
+		_categex.setProperty("VENDOR", "Exclude vendor");
 		_categex.setProperty("UNKNOWN", "Exclude uncategorized");
 		_categex.setProperty("FOTA", "Exclude Fota");
 		_categex.setProperty("TA", "Exclude TA");
 		_categwipe.setProperty("DATA", "Wipe data");
 		_categwipe.setProperty("CACHE", "Wipe cache");
 		_categwipe.setProperty("APPSLOG", "Wipe apps log");
-		_catorders.setProperty("1", "KERNEL");
-		_catorders.setProperty("2", "FOTA");
-		_catorders.setProperty("3", "BASEBAND");
-		_catorders.setProperty("4", "UNKNOWN");
-		_catorders.setProperty("5", "APPSLOG");
-		_catorders.setProperty("6", "CACHE");
-		_catorders.setProperty("7", "SYSTEM");
-		_catorders.setProperty("8", "DATA");
+		_catorders.put(-4, "BOOTBUNDLE");
+		_catorders.put(-3, "BOOT");
+		_catorders.put(-2, "PARTITION");
+		_catorders.put(-1, "TA");
+		_catorders.put(1, "KERNEL");
+		_catorders.put(2, "FOTA");
+		_catorders.put(3, "BASEBAND");
+		_catorders.put(4, "UNKNOWN");
+		_catorders.put(5, "APPSLOG");
+		_catorders.put(6, "CACHE");
+		_catorders.put(7, "SYSTEM");
+		_catorders.put(8, "DATA");
+		_catorders.put(9, "VENDOR");
+		_catorders.put(10, "ELABEL");
 	}
 	
 	public int getNbCategs() {
 		return _catorders.size();
 	}
 	
+	public Iterator<Integer> getOrder() {
+		return _catorders.keySet().iterator();
+	}
+	
 	public String getCagorie(int order) {
-		return _catorders.getProperty(Integer.toString(order));
+		return _catorders.get(order);
 	}
 	
 	public Enumeration<String> getCategories() {
@@ -63,7 +81,16 @@ public class BundleMetaData {
 				list.add(key);
 			}
 		}
-		return list.elements();
+		Vector<String> slist = new Vector<String>();
+		Iterator<Integer> ikeys = _catorders.keySet().iterator();
+		while (ikeys.hasNext()) {
+			Integer okey = ikeys.next();   
+			if (list.contains(_catorders.get(okey))) {
+				slist.add(_catorders.get(okey));
+			}
+				
+		}
+		return slist.elements();
 	}
 
 	public String getWipeLabel(String categ) {
@@ -83,13 +110,34 @@ public class BundleMetaData {
 				list.add(key);
 			}
 		}
-		return list.elements();
+		Vector<String> slist = new Vector<String>();
+		Iterator<Integer> ikeys = _catorders.keySet().iterator();
+		while (ikeys.hasNext()) {
+			Integer okey = ikeys.next();
+			if (list.contains(_catorders.get(okey))) {
+				slist.add(_catorders.get(okey));
+			}
+				
+		}
+		return slist.elements();
 	}
 
 	public void process(String fname,String path) throws Exception {
+		boolean isbundle = false;
+		try {
+			isbundle=new File(path).getParentFile().getName().toUpperCase().equals("BOOT");
+		} catch (Exception e) {}
+		if (!isbundle) isbundle=fname.toUpperCase().contains("BOOT/");
 		String intname = fname;
 		int S1pos = intname.toUpperCase().indexOf("_S1");
-		if (S1pos > 0) intname = intname.substring(0,S1pos)+".sin";
+		if (S1pos > 0) {
+				if (fname.toUpperCase().endsWith("SIN"))
+						intname = intname.substring(0,S1pos)+".sin";
+				else if (fname.toUpperCase().endsWith("TA"))
+					intname = intname.substring(0,S1pos)+".ta";
+				else if (fname.toUpperCase().endsWith("XML"))
+					intname = intname.substring(0,S1pos)+".ta";
+		}
 		_ftoint.setProperty(fname, intname);
 		_inttof.setProperty(intname, fname);
 		_pathtof.setProperty(intname, path);
@@ -111,6 +159,20 @@ public class BundleMetaData {
 			add(intname,"cache".toUpperCase());
 		else if (intname.toUpperCase().contains("KERNEL"))
 			add(intname,"kernel".toUpperCase());
+		else if (intname.toUpperCase().contains("RPM"))
+			add(intname,"kernel".toUpperCase());
+		else if (intname.toUpperCase().contains("ELABEL"))
+			add(intname,"elabel".toUpperCase());
+		else if (intname.toUpperCase().contains("VENDOR"))
+			add(intname,"vendor".toUpperCase());
+		else if (isbundle)
+			add(intname,"bootbundle".toUpperCase());
+		else if (intname.toUpperCase().startsWith("TZ"))
+			add(intname,"boot".toUpperCase());
+		else if (intname.toUpperCase().contains("SBL"))
+			add(intname,"boot".toUpperCase());
+		else if (intname.toUpperCase().contains("BOOT"))
+			add(intname,"boot".toUpperCase());
 		else if (intname.toUpperCase().startsWith("PARTITION"))
 			add(intname,"partition".toUpperCase());
 		else if (intname.toUpperCase().startsWith("LOADER"))

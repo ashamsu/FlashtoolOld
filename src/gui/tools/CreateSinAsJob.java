@@ -1,15 +1,9 @@
 package gui.tools;
 
-import flashsystem.SeusSinTool;
-import flashsystem.SinFile;
-
-import java.io.File;
-import java.util.Vector;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.swt.widgets.Shell;
 import org.logger.MyLogger;
 import org.system.OS;
 import org.system.ProcessBuilderWrapper;

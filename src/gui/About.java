@@ -85,7 +85,7 @@ public class About extends Dialog {
 		fd_lblNewLabel_4.top = new FormAttachment(lblNewLabel_3, 6);
 		fd_lblNewLabel_4.left = new FormAttachment(0, 10);
 		lblNewLabel_4.setLayoutData(fd_lblNewLabel_4);
-		lblNewLabel_4.setText("By Bin4ry & Androxyde");
+		lblNewLabel_4.setText("By Androxyde");
 		
 		Button btnNewButton = new Button(shlAbout, SWT.NONE);
 		btnNewButton.addSelectionListener(new SelectionAdapter() {
@@ -104,7 +104,7 @@ public class About extends Dialog {
 		link.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Program.launch("http://androxyde.github.com");
+				Program.launch("http://www.flashtool.net");
 			}
 		});
 		FormData fd_link = new FormData();
@@ -113,6 +113,20 @@ public class About extends Dialog {
 		fd_link.right = new FormAttachment(100, -102);
 		link.setLayoutData(fd_link);
 		link.setText("<a href=\"http://androxyde.github.com\">Homepage</a>");
+		
+		Label lblManyThanksTo = new Label(shlAbout, SWT.NONE);
+		FormData fd_lblManyThanksTo = new FormData();
+		fd_lblManyThanksTo.top = new FormAttachment(lblNewLabel_4, 36);
+		fd_lblManyThanksTo.left = new FormAttachment(0, 10);
+		lblManyThanksTo.setLayoutData(fd_lblManyThanksTo);
+		lblManyThanksTo.setText("Many thanks to contributors : Bin4ry, DooMLord, [NUT],");
+		
+		Label lblDevshaft = new Label(shlAbout, SWT.NONE);
+		FormData fd_lblDevshaft = new FormData();
+		fd_lblDevshaft.top = new FormAttachment(lblManyThanksTo, 6);
+		fd_lblDevshaft.left = new FormAttachment(0, 10);
+		lblDevshaft.setLayoutData(fd_lblDevshaft);
+		lblDevshaft.setText("DevShaft");
 		shlAbout.open();
 		shlAbout.layout();
 		Display display = getParent().getDisplay();
@@ -129,7 +143,7 @@ public class About extends Dialog {
 	 */
 	private void createContents() {
 		shlAbout = new Shell(getParent(), getStyle());
-		shlAbout.setSize(317, 198);
+		shlAbout.setSize(317, 246);
 		shlAbout.setText("About");
 
 	}

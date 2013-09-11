@@ -1,8 +1,5 @@
 package gui;
 
-import java.util.Iterator;
-import java.util.Set;
-
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import libusb.LibUsbException;

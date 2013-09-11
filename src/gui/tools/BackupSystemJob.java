@@ -11,8 +11,6 @@ import org.logger.MyLogger;
 import org.system.Devices;
 import org.system.OS;
 
-import flashsystem.X10flash;
-
 public class BackupSystemJob extends Job {
 
 	public BackupSystemJob(String name) {

@@ -3,7 +3,6 @@ package libusb;
 import com.sun.jna.Pointer;
 import libusb.jna.LibUsbLibrary;
 import libusb.jna.libusb_version;
-import linuxlib.JUsb;
 
 public class UsbSystem {
   Pointer context = null;

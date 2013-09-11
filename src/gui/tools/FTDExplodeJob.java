@@ -6,7 +6,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.logger.MyLogger;
 import org.system.FTDEntry;
-import org.eclipse.swt.widgets.Shell;
 
 public class FTDExplodeJob extends Job {
 
