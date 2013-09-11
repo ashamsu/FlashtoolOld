@@ -146,18 +146,20 @@ Section /o "Xperia Z Ultra drivers" SEC21
   File /r "Drivers\ADB\Xperia_Z_Ultra_driver\*"
 SectionEnd
 
-Section /o "Xperia™ Z Ultra XL39h driver" SEC22
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia™ Z Ultra XL39h driver"
-  File /r "Drivers\ADB\Xperia™ Z Ultra XL39h driver\*"
+Section /o "Xperia Z Ultra XL39h driver" SEC22
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z Ultra XL39h driver"
+  File /r "Drivers\ADB\Xperia Z Ultra XL39h driver\*"
 SectionEnd
 
-Section /o "Xperia™ Z1 driver" SEC23
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia™ Z1 driver"
-  File /r "Drivers\ADB\Xperia™ Z1 driver\*"
+Section /o "Xperia Z1 driver" SEC23
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z1 driver"
+  File /r "Drivers\ADB\Xperia Z1 driver\*"
+SectionEnd
   
-Section /o "Xperia™ Z1 L39h driver" SEC24
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia™ Z1 L39h driver"
-  File /r "Drivers\ADB\Xperia™ Z1 L39h driver\*"
+Section /o "Xperia Z1 L39h driver" SEC24
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z1 L39h driver"
+  File /r "Drivers\ADB\Xperia Z1 L39h driver\*"
+SectionEnd
   
 Section /o "Xperia UL Drivers" SEC25
   SetOutPath "$TEMP\Flashtool\ADB\Xperia UL Drivers"
