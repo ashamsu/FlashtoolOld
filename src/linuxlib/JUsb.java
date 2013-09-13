@@ -48,7 +48,7 @@ public class JUsb {
 		else {
 			VendorId = "";
 			DeviceId = "";
-			Serial = "";			
+			Serial = "";
 		}
 	}
 

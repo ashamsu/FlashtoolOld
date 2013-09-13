@@ -18,7 +18,7 @@ public class UsbDevice
   private Vector<UsbConfiguration> confs = new Vector();
   private int iface_detached = -1;
   private int iface_claimed = -1;
-  private int refcount=1;
+  private int refcount=0;
   private byte default_endpoint_in=0, default_endpoint_out=0;
   private int nbconfig=0;
 
@@ -126,10 +126,10 @@ public class UsbDevice
     else return "";
   }
 
-  public void setConfiguration() {
+  public void setConfiguration() throws Exception {
     PointerByReference configRef = new PointerByReference();
     int result = LibUsbLibrary.libUsb.libusb_get_config_descriptor(this.usb_device, 0, configRef);
-	  int retries=0;
+    int retries=0;
 	  int maxretries=5;
 	  if (result <0) {
 		  while (retries<maxretries) {
@@ -142,6 +142,7 @@ public class UsbDevice
 		  }			  
 	  }
     UsbSystem.checkError("get_config", result);
+    if (result<0) throw new Exception("setConfiguration error");
     libusb_config_descriptor cd = new libusb_config_descriptor(configRef.getValue());
     libusb_config_descriptor[] cdescs = cd.toArray(nbconfig);
     for (libusb_config_descriptor cdesc : cdescs) {

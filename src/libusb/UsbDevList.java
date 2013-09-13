@@ -8,9 +8,11 @@ public class UsbDevList {
 	Vector<UsbDevice> list = new Vector<UsbDevice>();
 	
 	public void addDevice(UsbDevice d) {
-		d.setConfiguration();
-		d.ref();
-		list.add(d);
+		try {
+			d.setConfiguration();
+			d.ref();
+			list.add(d);
+		} catch (Exception e) {};
 	}
 
 	public Iterator<UsbDevice> getDevices() {
