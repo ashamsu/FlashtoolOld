@@ -45,9 +45,8 @@ public class About extends Dialog {
 		Label lblNewLabel = new Label(shlAbout, SWT.NONE);
 		lblNewLabel.setAlignment(SWT.CENTER);
 		FormData fd_lblNewLabel = new FormData();
-		fd_lblNewLabel.right = new FormAttachment(0, 301);
-		fd_lblNewLabel.top = new FormAttachment(0, 10);
-		fd_lblNewLabel.left = new FormAttachment(0, 10);
+		fd_lblNewLabel.left = new FormAttachment(0, 34);
+		fd_lblNewLabel.right = new FormAttachment(0, 325);
 		lblNewLabel.setLayoutData(fd_lblNewLabel);
 		lblNewLabel.setText("Xperia flashing tool");
 		
@@ -55,17 +54,18 @@ public class About extends Dialog {
 		lblNewLabel_1.setAlignment(SWT.CENTER);
 		FormData fd_lblNewLabel_1 = new FormData();
 		fd_lblNewLabel_1.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
-		fd_lblNewLabel_1.left = new FormAttachment(lblNewLabel, 0, SWT.LEFT);
+		fd_lblNewLabel_1.left = new FormAttachment(0, 34);
 		lblNewLabel_1.setLayoutData(fd_lblNewLabel_1);
 		lblNewLabel_1.setText("Java Version " + System.getProperty("java.version") + " " + System.getProperty("sun.arch.data.model") + "bits Edition");
 		
 		Label lblNewLabel_2 = new Label(shlAbout, SWT.NONE);
-		lblNewLabel_2.setAlignment(SWT.CENTER);
 		fd_lblNewLabel_1.top = new FormAttachment(lblNewLabel_2, 6);
+		fd_lblNewLabel.bottom = new FormAttachment(100, -192);
+		lblNewLabel_2.setAlignment(SWT.CENTER);
 		FormData fd_lblNewLabel_2 = new FormData();
-		fd_lblNewLabel_2.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
 		fd_lblNewLabel_2.top = new FormAttachment(lblNewLabel, 6);
-		fd_lblNewLabel_2.left = new FormAttachment(0, 10);
+		fd_lblNewLabel_2.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
+		fd_lblNewLabel_2.left = new FormAttachment(0, 34);
 		lblNewLabel_2.setLayoutData(fd_lblNewLabel_2);
 		lblNewLabel_2.setText(getVersion());
 		
@@ -73,17 +73,17 @@ public class About extends Dialog {
 		lblNewLabel_3.setAlignment(SWT.CENTER);
 		FormData fd_lblNewLabel_3 = new FormData();
 		fd_lblNewLabel_3.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
-		fd_lblNewLabel_3.top = new FormAttachment(lblNewLabel_1, 6);
-		fd_lblNewLabel_3.left = new FormAttachment(0, 10);
+		fd_lblNewLabel_3.left = new FormAttachment(0, 34);
 		lblNewLabel_3.setLayoutData(fd_lblNewLabel_3);
 		lblNewLabel_3.setText("OS Version "+OS.getVersion());
 		
 		Label lblNewLabel_4 = new Label(shlAbout, SWT.NONE);
+		fd_lblNewLabel_3.bottom = new FormAttachment(100, -129);
 		lblNewLabel_4.setAlignment(SWT.CENTER);
 		FormData fd_lblNewLabel_4 = new FormData();
-		fd_lblNewLabel_4.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
 		fd_lblNewLabel_4.top = new FormAttachment(lblNewLabel_3, 6);
-		fd_lblNewLabel_4.left = new FormAttachment(0, 10);
+		fd_lblNewLabel_4.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
+		fd_lblNewLabel_4.left = new FormAttachment(0, 34);
 		lblNewLabel_4.setLayoutData(fd_lblNewLabel_4);
 		lblNewLabel_4.setText("By Androxyde");
 		
@@ -96,7 +96,7 @@ public class About extends Dialog {
 		});
 		FormData fd_btnNewButton = new FormData();
 		fd_btnNewButton.bottom = new FormAttachment(100, -10);
-		fd_btnNewButton.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
+		fd_btnNewButton.right = new FormAttachment(100, -10);
 		btnNewButton.setLayoutData(fd_btnNewButton);
 		btnNewButton.setText("Close");
 		
@@ -109,22 +109,22 @@ public class About extends Dialog {
 		});
 		FormData fd_link = new FormData();
 		fd_link.top = new FormAttachment(lblNewLabel_4, 6);
-		fd_link.left = new FormAttachment(lblNewLabel, 113, SWT.LEFT);
-		fd_link.right = new FormAttachment(100, -102);
+		fd_link.right = new FormAttachment(lblNewLabel, 0, SWT.RIGHT);
+		fd_link.left = new FormAttachment(0, 156);
 		link.setLayoutData(fd_link);
 		link.setText("<a href=\"http://androxyde.github.com\">Homepage</a>");
 		
 		Label lblManyThanksTo = new Label(shlAbout, SWT.NONE);
 		FormData fd_lblManyThanksTo = new FormData();
-		fd_lblManyThanksTo.top = new FormAttachment(lblNewLabel_4, 36);
-		fd_lblManyThanksTo.left = new FormAttachment(0, 10);
+		fd_lblManyThanksTo.left = new FormAttachment(0, 44);
 		lblManyThanksTo.setLayoutData(fd_lblManyThanksTo);
 		lblManyThanksTo.setText("Many thanks to contributors : Bin4ry, DooMLord, [NUT],");
 		
 		Label lblDevshaft = new Label(shlAbout, SWT.NONE);
+		fd_lblManyThanksTo.bottom = new FormAttachment(100, -57);
 		FormData fd_lblDevshaft = new FormData();
 		fd_lblDevshaft.top = new FormAttachment(lblManyThanksTo, 6);
-		fd_lblDevshaft.left = new FormAttachment(0, 10);
+		fd_lblDevshaft.left = new FormAttachment(0, 43);
 		lblDevshaft.setLayoutData(fd_lblDevshaft);
 		lblDevshaft.setText("DevShaft");
 		shlAbout.open();
@@ -143,7 +143,7 @@ public class About extends Dialog {
 	 */
 	private void createContents() {
 		shlAbout = new Shell(getParent(), getStyle());
-		shlAbout.setSize(317, 246);
+		shlAbout.setSize(400, 246);
 		shlAbout.setText("About");
 
 	}
