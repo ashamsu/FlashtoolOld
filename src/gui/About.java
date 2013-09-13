@@ -143,7 +143,10 @@ public class About extends Dialog {
 	 */
 	private void createContents() {
 		shlAbout = new Shell(getParent(), getStyle());
+		if (OS.getName().equals("windows"))
 		shlAbout.setSize(400, 246);
+		else
+			shlAbout.setSize(450, 246);
 		shlAbout.setText("About");
 
 	}
