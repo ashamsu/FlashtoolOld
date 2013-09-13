@@ -32,7 +32,6 @@ public class VersionChecker extends Thread {
 		    		   notchecked=false;
 		    		   String version1 = inputLine.substring(inputLine.indexOf("value")+7);
 		    		   final String version = version1.substring(0,version1.indexOf("\""));
-		    		   System.out.println(About.build);
 		    		   if (!About.build.contains(version)) {
 		    			   if (!About.build.contains("beta")) {
 		    		   		if (_s!=null) {

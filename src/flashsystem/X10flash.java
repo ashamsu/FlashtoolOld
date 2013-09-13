@@ -354,7 +354,6 @@ public class X10flash {
     }
    
     public void sendBootBundle(InputStream is, String name) {
-    	System.out.println(name);
     }
     
     public void sendBootBundleFiles() throws FileNotFoundException, IOException,X10FlashException {
