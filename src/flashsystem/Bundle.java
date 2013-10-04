@@ -1,10 +1,12 @@
 package flashsystem;
 
 import gui.tools.FirmwareFileFilter;
+import gui.tools.XMLBootDelivery;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -21,6 +23,7 @@ import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 import java.util.zip.Deflater;
+
 import org.logger.MyLogger;
 import org.system.OS;
 
@@ -35,9 +38,12 @@ public final class Bundle {
     private String _branding;
     private String _device;
     private String _cmd25;
+    private String _resetCust;
     public final static int JARTYPE=1;
     public final static int FOLDERTYPE=2;
     private BundleMetaData _meta;
+    private boolean bootdeliveryflashed=false;
+    private XMLBootDelivery xmlb;
 
     public Bundle() {
     	_meta = new BundleMetaData();
@@ -74,6 +80,7 @@ public final class Bundle {
 			Enumeration<JarEntry> e = _firmware.entries();
 			while (e.hasMoreElements()) {
 				BundleEntry entry = new BundleEntry(this,e.nextElement());
+				if (!entry.getName().toUpperCase().startsWith("BOOT/")) {
 				if (entry.getName().toUpperCase().endsWith("SIN") || entry.getName().toUpperCase().endsWith("TA") || entry.getName().toUpperCase().endsWith("XML")) {
 					try {
 						_meta.process(entry.getName(), "");
@@ -82,6 +89,7 @@ public final class Bundle {
 					}
 					bundleList.put(entry.getName(), entry);
 					MyLogger.getLogger().debug("Added this entry to the bundle list : "+entry.getName());
+				}
 				}
 			}
 		}
@@ -148,16 +156,28 @@ public final class Bundle {
 		return _meta.hasCategorie("TA",true);
 	}
 
+	public boolean isBootDeliveryFlashed() {
+		return bootdeliveryflashed;
+	}
+	
+	public void setBootDeliveryFlashed(boolean flashed) {
+		bootdeliveryflashed=flashed;
+	}
+	
 	public BundleEntry getLoader() throws IOException, FileNotFoundException {
 		return (BundleEntry)bundleList.get("loader.sin");
 	}
 
+	public BundleEntry getBootDelivery()  throws IOException, FileNotFoundException {
+		return (BundleEntry)bundleList.get("boot_delivery.xml");
+	}
+	
 	public boolean hasLoader() {
 		return _meta.hasCategorie("LOADER",false);
 	}
 
-	public boolean hasBootzip() {
-		return _meta.hasCategorie("BOOTBUNDLE",false);
+	public boolean hasBootDelivery() {
+		return _meta.hasCategorie("BOOTBUNDLE",true);
 	}
 
 	public BundleEntry getPartition() throws IOException, FileNotFoundException {
@@ -198,6 +218,20 @@ public final class Bundle {
 			return false;
 		}
 	}
+
+	public void setResetStats(String value) {
+		_resetCust = value;
+		if (_resetCust==null) _resetCust="false";
+	}
+
+	public boolean hasResetStats() {
+		try {
+			return _resetCust.equals("true");
+		}
+		catch (Exception e) {
+			return false;
+		}
+	}
 	
 	public void createFTF() throws Exception {
 		File ftf = new File(OS.getWorkDir()+"/firmwares/"+_device+"_"+_version+"_"+_branding+".ftf");
@@ -226,11 +260,7 @@ public final class Bundle {
 			int S1pos = name.toUpperCase().indexOf("_S1");
 			if (S1pos > 0) name = name.substring(0,S1pos)+".sin";
 			MyLogger.getLogger().info("Adding "+name+" to the bundle");
-		    JarEntry jarAdd;
-		    if (new File(entry.getAbsolutePath()).getParentFile().getName().toUpperCase().equals("BOOT"))
-		    	jarAdd = new JarEntry("boot/"+name);
-		    else
-		    	jarAdd = new JarEntry(name);
+		    JarEntry jarAdd = new JarEntry(name);
 	        out.putNextEntry(jarAdd);
 	        InputStream in = entry.getInputStream();
 	        while (true) {
@@ -241,6 +271,27 @@ public final class Bundle {
 	          MyLogger.updateProgress();
 	        }
 	        in.close();
+	        if (new File(entry.getAbsolutePath()).getParentFile().getName().toUpperCase().equals("BOOT")) {
+	        	String folder = new File(entry.getAbsolutePath()).getParentFile().getAbsolutePath();
+				XMLBootDelivery xml = new XMLBootDelivery(new File(entry.getAbsolutePath()));
+				Enumeration files = xml.getFiles();
+				while (files.hasMoreElements()) {
+					String bootname = (String)files.nextElement();
+					MyLogger.getLogger().info("Adding "+bootname+" to the bundle");
+				    jarAdd = new JarEntry("boot/"+bootname.replace(".sin", ".sinb").replace(".ta", ".tab"));
+			        out.putNextEntry(jarAdd);
+			        InputStream bin = new FileInputStream(new File(folder+File.separator+bootname));
+			        while (true) {
+			          int nRead = bin.read(buffer, 0, buffer.length);
+			          if (nRead <= 0)
+			            break;
+			          out.write(buffer, 0, nRead);
+			          MyLogger.updateProgress();
+			        }
+			        bin.close();
+				}
+
+	        }
 		}
 		out.close();
 	    stream.close();
@@ -264,7 +315,7 @@ public final class Bundle {
 	    MyLogger.initProgress(0);
 	}
 
-	private void saveEntry(BundleEntry entry) throws IOException {
+	private void saveEntry(BundleEntry entry, boolean addmeta) throws IOException {
 		if (entry.isJarEntry()) {
 			MyLogger.getLogger().debug("Saving entry "+entry.getName()+" to disk");
 			InputStream in = entry.getInputStream();
@@ -278,7 +329,8 @@ public final class Bundle {
 				out.write(buffer, 0, len);
 			in.close();
 			out.close();
-			bundleList.put(entry.getName(), new BundleEntry(new File(outname),entry.getName()));
+			if (addmeta)
+				bundleList.put(entry.getName(), new BundleEntry(new File(outname),entry.getName()));
 		}
 	}
 	
@@ -326,16 +378,16 @@ public final class Bundle {
 		    	BundleEntry entry = getEntry(e.nextElement());
 		    	try {
 		    		if (!entry.getName().toUpperCase().endsWith(".TA")) {
-			    		if (!entry.getName().toUpperCase().endsWith("ZIP")) {
-			    			if (!entry.getName().toUpperCase().contains("LOADER")) {
+		    			if (!entry.getName().toUpperCase().contains("LOADER")) {
+		    				if (entry.getName().toUpperCase().endsWith("SIN")) {
 					    		long filecount = 0;
 					    		SinFile s = new SinFile(entry.getAbsolutePath());
 					    		s.setChunkSize(chunksize);
 					    		s.getSinHeader().setChunkSize(chunksize);
 					    		filecount = filecount + s.getNbChunks()+s.getSinHeader().getNbChunks();
 					    		totalsize += filecount;
-			    			}
-			    		}
+		    				}
+		    			}
 		    		}
 		    	} catch (Exception ex) {}
 		    }
@@ -359,13 +411,27 @@ public final class Bundle {
 			MyLogger.getLogger().debug("Created the "+f.getName()+" folder");
 			Enumeration<String> entries = _meta.getAllEntries(true);
 			while (entries.hasMoreElements()) {
-				saveEntry(getEntry(entries.nextElement()));
+				String entry = entries.nextElement();
+				saveEntry(getEntry(entry),true);
+				if (entry.toUpperCase().equals("BOOT_DELIVERY.XML")) {
+					BundleEntry xmlentry = getEntry(entry);
+					xmlb = new XMLBootDelivery(new File(xmlentry.getAbsolutePath()));
+					Enumeration files = xmlb.getFiles();
+					while (files.hasMoreElements()) {
+						String file = (String)files.nextElement();
+						JarEntry j = _firmware.getJarEntry("boot/"+file.replace(".sin", ".sinb").replace(".ta", ".tab"));
+						BundleEntry bent = new BundleEntry(this,j);
+						bent.setName(bent.getName().replace(".sinb", ".sin").replace(".tab", ".ta"));
+						saveEntry(bent,false);
+					}
+				}
 			}
 			if (hasLoader())
-				saveEntry(getLoader());
+				saveEntry(getLoader(),true);
 			return true;
 		}
 		catch (Exception e) {
+			e.printStackTrace();
 			MyLogger.getLogger().error(e.getMessage());
 			return false;
 		}
@@ -378,19 +444,23 @@ public final class Bundle {
 			while (e.hasMoreElements()) {
 				JarEntry entry = e.nextElement();
 				String outname = "."+OS.getFileSeparator()+"firmwares"+OS.getFileSeparator()+"prepared"+OS.getFileSeparator()+entry.getName();
+				if (entry.getName().toUpperCase().endsWith(".SINB") || entry.getName().toUpperCase().endsWith(".TAB")) {
+					outname = outname.replace(".sinb", ".sin").replace(".tab", ".ta");
+				}
 				f = new File(outname);
-				f.delete();
+				if (f.exists())
+					f.delete();
 			}
-			try {
-				f = new File("."+OS.getFileSeparator()+"firmwares"+OS.getFileSeparator()+"prepared"+File.separator+"boot");
+			f = new File("."+OS.getFileSeparator()+"firmwares"+OS.getFileSeparator()+"prepared"+File.separator+"boot");
+			if (f.exists())
 				f.delete();
-			} catch (Exception ex) {}
 			f = new File("."+OS.getFileSeparator()+"firmwares"+OS.getFileSeparator()+"prepared");
-			f.delete();
+			if (f.exists())
+				f.delete();
 			try {
 				_firmware.close();
 			}
-			catch (IOException ioe) {}
+			catch (IOException ioe) {ioe.printStackTrace();}
 		}
 	}
 	
@@ -405,4 +475,9 @@ public final class Bundle {
 	public String toString() {
 	    return _device + " / " + _version + " / " + _branding;
 	}
+	
+	public XMLBootDelivery getXMLBootDelivery() {
+		return xmlb;
+	}
+
 }

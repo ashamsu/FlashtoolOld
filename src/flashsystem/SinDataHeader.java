@@ -11,6 +11,11 @@ public class SinDataHeader {
 	public byte[] gptplength = new byte[4];
 	SinAddrMap map = new SinAddrMap();
 	long outputsize = 0L;
+	long _sinheader = 0L;
+	
+	public SinDataHeader(int sinheader) {
+		_sinheader = sinheader;
+	}
 	
 	public int getMmcfLength() {
 		return BytesUtil.getInt(mmcflength);
@@ -48,7 +53,7 @@ public class SinDataHeader {
 	public String computeDataSizeAndType(RandomAccessFile fin) throws IOException {
 		SinAddr a = map.get(0);
 		byte[] res = new byte[(int)a.getDataLength()];
-		fin.seek(getDataHeaderSize()+map.getSize()+a.getSrcOffset());
+		fin.seek(_sinheader+getDataOffset()+a.getSrcOffset());
 		fin.read(res);
 		byte[] magic = new byte[4];
 		int pos = 0;
@@ -57,7 +62,7 @@ public class SinDataHeader {
 		pos = 0;
 		System.arraycopy(res, startpos + pos, magic, 0, magic.length);
 		if (new String(magic).contains("ELF")) return "elf";
-		while (!HexDump.toHex(magic).startsWith("[FF, FF, 53, EF")) {
+		while (!HexDump.toHex(magic).endsWith(", 53, EF]")) {
 			pos++;
 			try {
 				System.arraycopy(res, startpos+pos, magic, 0, magic.length);

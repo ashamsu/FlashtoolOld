@@ -177,7 +177,7 @@ public class MainSWT {
 		      }
 		    });
 		shlSonyericsson.setSize(794, 451);
-		shlSonyericsson.setText("SonyEricsson Xperia Flasher by Bin4ry & Androxyde");
+		shlSonyericsson.setText("Sony Mobile Flasher by Androxyde");
 		shlSonyericsson.setImage(SWTResourceManager.getImage(MainSWT.class, "/gui/ressources/icons/flash_32.png"));
 		shlSonyericsson.setLayout(new FormLayout());
 		

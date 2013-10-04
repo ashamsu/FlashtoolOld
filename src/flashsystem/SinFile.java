@@ -178,7 +178,7 @@ public class SinFile {
 	public void dumpImageV3() throws FileNotFoundException, IOException {
 		RandomAccessFile fin = new RandomAccessFile(sinfile,"r");
 		fin.seek(sinheader.getHeaderSize());
-		SinDataHeader dhead = new SinDataHeader();
+		SinDataHeader dhead = new SinDataHeader(sinheader.getHeaderSize());
 		byte[] chunk = new byte[65*1024];
 		fin.read(dhead.mmcfmagic);
 		fin.read(dhead.mmcflength);

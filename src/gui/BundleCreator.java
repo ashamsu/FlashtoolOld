@@ -108,7 +108,7 @@ public class BundleCreator extends Dialog {
 		File srcdir = new File(sourceFolder.getText());
 		File[] chld = srcdir.listFiles();
 		for(int i = 0; i < chld.length; i++) {
-			if (chld[i].getName().toUpperCase().endsWith("SIN") || chld[i].getName().toUpperCase().endsWith("TA") || chld[i].getName().toUpperCase().endsWith("XML")) {
+			if (chld[i].getName().toUpperCase().endsWith("SIN") || (chld[i].getName().toUpperCase().endsWith("TA") && !chld[i].getName().toUpperCase().contains("SIMLOCK")) || (chld[i].getName().toUpperCase().endsWith("XML") && !chld[i].getName().toUpperCase().contains("UPDATE"))) {
 				files.add(chld[i]);
 			}
 		}
@@ -116,7 +116,7 @@ public class BundleCreator extends Dialog {
 		if (srcdir.exists()) {
 			chld = srcdir.listFiles();
 			for(int i = 0; i < chld.length; i++) {
-				if (chld[i].getName().toUpperCase().endsWith("SIN") || chld[i].getName().toUpperCase().endsWith("TA") || chld[i].getName().toUpperCase().endsWith("XML")) {
+				if (chld[i].getName().toUpperCase().endsWith("XML")) {
 					files.add(chld[i]);
 				}
 			}
@@ -412,7 +412,7 @@ public class BundleCreator extends Dialog {
 		    			File srcdir = new File(sourceFolder.getText());
 		    			File[] chld = srcdir.listFiles();
 		    			for(int i = 0; i < chld.length; i++) {
-		    				if (chld[i].getName().toUpperCase().endsWith("SIN") || chld[i].getName().toUpperCase().endsWith("TA") || chld[i].getName().toUpperCase().endsWith("XML")) {
+		    				if (chld[i].getName().toUpperCase().endsWith("SIN") || (chld[i].getName().toUpperCase().endsWith("TA") && !chld[i].getName().toUpperCase().contains("SIMLOCK")) || (chld[i].getName().toUpperCase().endsWith("XML") && !chld[i].getName().toUpperCase().contains("UPDATE"))) {
 		    					files.add(chld[i]);
 		    				}
 		    			}
@@ -420,7 +420,7 @@ public class BundleCreator extends Dialog {
 		    			if (srcdir.exists()) {
 		    				chld = srcdir.listFiles();
 			    			for(int i = 0; i < chld.length; i++) {
-			    				if (chld[i].getName().toUpperCase().endsWith("SIN") || chld[i].getName().toUpperCase().endsWith("TA") || chld[i].getName().toUpperCase().endsWith("XML")) {
+			    				if (chld[i].getName().toUpperCase().endsWith("XML")) {
 			    					files.add(chld[i]);
 			    				}
 			    			}

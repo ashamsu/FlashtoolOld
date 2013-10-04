@@ -8,14 +8,10 @@ public class Command {
 
     private boolean _simulate;
 
-	public static final byte[] TA_FLASH_STARTUP_SHUTDOWN_RESULT_ONGOING	     = { 
-		0x00, 0x00, 0x09, 0x62, 0x00, 0x00, 0x00, 0x01, 0x00}; 
-    public static final byte[] TA_EDREAM_FLASH_STARTUP_SHUTDOWN_RESULT_ONGOING	 = {
+    public static final byte[] TA_FLASH_STARTUP_SHUTDOWN_RESULT_ONGOING	 = {
     	0x00, 0x00, 0x27, 0x74, 0x00, 0x00, 0x00, 0x01, 0x01};
 	public static final byte[] TA_FLASH_STARTUP_SHUTDOWN_RESULT_FINISHED		 = {
 		0x00, 0x00, 0x27, 0x74, 0x00, 0x00, 0x00, 0x01, 0x00};
-	public static final byte[] TA_EDREAM_FLASH_STARTUP_SHUTDOWN_RESULT_FINISHED = {
-		0x00, 0x00, 0x08, (byte)0xB3, 0x00, 0x00, 0x00, 0x01, (byte)0xAA};
 
 	public static final byte[] TA_DEVID1 = {
 		(byte)0x00, (byte)0x00, (byte)0x08, (byte)0xA2

@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.jar.JarEntry;
+
 import org.logger.MyLogger;
 import org.system.OS;
 
@@ -28,9 +29,12 @@ public class BundleEntry {
 		_name = j.getName();
 	}
 	
+	public void setName(String name) {
+		_name = name;
+	}
 	public InputStream getInputStream() throws FileNotFoundException, IOException {
 		if (fileentry!=null) {
-			MyLogger.getLogger().debug("Streaming from file : "+fileentry.getPath());
+			MyLogger.getLogger().info("Streaming from file : "+fileentry.getPath());
 			return new FileInputStream(fileentry);
 		}
 		else {
@@ -69,4 +73,7 @@ public class BundleEntry {
 		return _categorie;
 	}
 
+	public String getFolder() {
+		return new File(getAbsolutePath()).getParent();
+	}
 }

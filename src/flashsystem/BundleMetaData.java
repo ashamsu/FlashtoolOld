@@ -123,11 +123,6 @@ public class BundleMetaData {
 	}
 
 	public void process(String fname,String path) throws Exception {
-		boolean isbundle = false;
-		try {
-			isbundle=new File(path).getParentFile().getName().toUpperCase().equals("BOOT");
-		} catch (Exception e) {}
-		if (!isbundle) isbundle=fname.toUpperCase().contains("BOOT/");
 		String intname = fname;
 		int S1pos = intname.toUpperCase().indexOf("_S1");
 		if (S1pos > 0) {
@@ -165,7 +160,7 @@ public class BundleMetaData {
 			add(intname,"elabel".toUpperCase());
 		else if (intname.toUpperCase().contains("VENDOR"))
 			add(intname,"vendor".toUpperCase());
-		else if (isbundle)
+		else if (intname.toUpperCase().contains("BOOT_DELIVERY"))
 			add(intname,"bootbundle".toUpperCase());
 		else if (intname.toUpperCase().startsWith("TZ"))
 			add(intname,"boot".toUpperCase());

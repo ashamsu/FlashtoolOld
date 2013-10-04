@@ -51,6 +51,7 @@ public class FTFSelector extends Dialog {
 	private Table tableContent;
 	private Text sourceFolder;
 	private Button btnCheckCmd25;
+	private Button btnResetCust;
 	private Composite compositeContent;
 	private Composite compositeMisc;
 	private Button btnCancel;
@@ -446,6 +447,16 @@ public class FTFSelector extends Dialog {
 			});
 			btnCheckCmd25.setText("No final verification");
 			btnCheckCmd25.setSelection(firm.getBundle().hasCmd25());
+			
+			btnResetCust = new Button(compositeMisc, SWT.CHECK);
+			btnResetCust.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					result.setResetStats(btnResetCust.getSelection()?"true":"false");
+				}
+			});
+			btnResetCust.setText("Reset customizations");
+			btnResetCust.setSelection(firm.getBundle().hasResetStats());
 			compositeMisc.setSize(compositeMisc.computeSize(SWT.DEFAULT, SWT.DEFAULT));
 			compositeMisc.layout();
 		}

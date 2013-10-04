@@ -8,14 +8,16 @@ import java.util.Vector;
 /** Demonstrate using Scanner to read a file. **/
 public class TaFile {
   
+	File _taf;
 	FileInputStream _in;
 	Scanner _scanner;
 	Vector<TaEntry> entries = new Vector<TaEntry>();
 	
-	public TaFile(InputStream in) throws TaParseException {
+	public TaFile(File f) throws TaParseException, FileNotFoundException {
+		_taf = f;
 		TaEntry entry = new TaEntry();
-		_in = (FileInputStream)in;
-	    _scanner = new Scanner (in);
+		_in = new FileInputStream(f);
+	    _scanner = new Scanner (_in);
 	    String partition="";
 	    boolean beginentry=false;
 	    while (_scanner.hasNextLine()) {
@@ -59,6 +61,10 @@ public class TaFile {
 
 	public Vector<TaEntry> entries() {
 		return entries;
+	}
+	
+	public String getName() {
+		return _taf.getName();
 	}
 	
 	public String toString() {
