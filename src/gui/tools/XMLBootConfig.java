@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
+import org.logger.MyLogger;
+
 public class XMLBootConfig {
 
 	private String _configname = "";
@@ -102,18 +104,18 @@ public class XMLBootConfig {
 
 	public boolean isComplete() {
 		if (!new File(getTA()).exists()) {
-			System.out.println("missing "+getTA());
+			MyLogger.getLogger().error("missing "+getTA());
 			return false;
 		}
 		if (!new File(getAppsBootFile()).exists()) {
-			System.out.println("missing "+getAppsBootFile());
+			MyLogger.getLogger().error("missing "+getAppsBootFile());
 			return false;
 		}
 		Iterator<String> i = getOtherFiles().iterator();
 		while (i.hasNext()) {
 			String f = i.next();
 			if (!new File(f).exists()) {
-				System.out.println("missing "+f);
+				MyLogger.getLogger().error("missing "+f);
 				return false;
 			}
 		}

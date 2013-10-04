@@ -41,6 +41,7 @@ public class XMLBootDelivery {
 	}
 
 	public boolean mustUpdate(String bootver) {
+		MyLogger.getLogger().info("Phone boot version : "+bootver+". Boot delivery version : "+getBootVersion());
 		bootver = bootver.toUpperCase();
 		String deliveryver = getBootVersion().toUpperCase();
 		if (bootver.equals(deliveryver)) return false;
