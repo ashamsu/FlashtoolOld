@@ -105,7 +105,7 @@ public class BLUWizard extends Dialog {
 		btnGetUnlock.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				Program.launch("http://unlockbootloader.sonymobile.com/unlock/step1");
+				Program.launch("http://unlockbootloader.sonymobile.com/");
 			}
 		});
 		btnGetUnlock.setBounds(127, 34, 118, 25);

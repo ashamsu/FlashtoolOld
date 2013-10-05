@@ -180,6 +180,10 @@ public final class Bundle {
 		return _meta.hasCategorie("BOOTBUNDLE",true);
 	}
 
+	public boolean hasBoot() {
+		return _meta.hasCategorie("BOOT",true);
+	}
+
 	public BundleEntry getPartition() throws IOException, FileNotFoundException {
 		return (BundleEntry)bundleList.get(_meta.getEntriesOf("PARTITION",true).nextElement());
 	}

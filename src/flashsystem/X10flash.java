@@ -317,6 +317,22 @@ public class X10flash {
 			uploadImage(sin);
 		}
     }
+
+    public void sendBoot() throws FileNotFoundException, IOException,X10FlashException {
+    	if (_bundle.hasBoot()) {
+    		openTA(2);
+    		Enumeration<String> e = _bundle.getMeta().getEntriesOf("BOOT", true);
+    		while (e.hasMoreElements()) {
+				String entry = (String)e.nextElement();
+				BundleEntry bent = _bundle.getEntry(entry);
+				SinFile sin = new SinFile(bent.getAbsolutePath());
+				sin.setChunkSize(maxpacketsize);
+				uploadImage(sin);
+				MyLogger.getLogger().debug("Flashing "+bent.getName()+" finished");
+    		}
+    		closeTA();
+    	}
+    }
     
     public void sendImages() throws FileNotFoundException, IOException,X10FlashException {
     	Iterator<Integer> orderlist = _bundle.getMeta().getOrder();
@@ -477,6 +493,7 @@ public class X10flash {
 		    setFlashState(true);
 		    sendPartition();
 		    sendBootDelivery();
+		    sendBoot();
 			sendImages();
 			if (_bundle.isBootDeliveryFlashed()) {
 				openTA(2);
@@ -562,7 +579,7 @@ public class X10flash {
 			phoneprops.setProperty("ROOTING_STATUS", "ROOTED");
 		if (printProps) {
 			MyLogger.getLogger().debug("After loader command reply (hook) : "+cmd01string);
-			MyLogger.getLogger().info("Loader : "+phoneprops.getProperty("LOADER_ROOT")+" - Version : "+phoneprops.getProperty("VER")+" / Bootloader status : "+phoneprops.getProperty("ROOTING_STATUS"));
+			MyLogger.getLogger().info("Loader : "+phoneprops.getProperty("LOADER_ROOT")+" - Version : "+phoneprops.getProperty("VER")+" / Boot version : "+phoneprops.getProperty("BOOTVER")+" / Bootloader status : "+phoneprops.getProperty("ROOTING_STATUS"));
 		}
 		else
 			MyLogger.getLogger().debug("First command reply (hook) : "+cmd01string);
