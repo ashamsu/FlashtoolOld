@@ -519,4 +519,18 @@ public class AdbUtility  {
 			return "";
 		}
 	}
+	
+	public static void antiRic() {
+		try {
+			String psres = AdbUtility.run("ps|busybox grep bin/ric").trim();
+			if (psres.length()>0) {
+				MyLogger.getLogger().info("Stopping ric service");
+				String[] list = psres.split(" ");
+				String ric = list[list.length-1].trim();
+				AdbUtility.run("su -c 'mount -o remount,rw / && busybox mv "+ric+" "+ric+"c && mount -o remount,ro / && busybox pkill "+ric+"'");
+			}
+		}
+		catch (Exception e) {
+		}
+	}
 }

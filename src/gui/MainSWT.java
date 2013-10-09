@@ -898,10 +898,7 @@ public class MainSWT {
         			Devices.setCurrent(devid);
         			String prop = DeviceProperties.getProperty(Devices.getCurrent().getBuildProp());
         			if (!Devices.getCurrent().getRecognition().contains(prop)) {
-        				String[] choices = {"Yes", "No"};
-        				MessageBox messageBox = new MessageBox(shlSonyericsson, SWT.ICON_QUESTION |SWT.YES | SWT.NO);
-        			    messageBox.setMessage("Do you want to permanently identify this device as \n"+Devices.getCurrent().getName()+"?");
-        			    int response = messageBox.open();
+        			    int response = Integer.parseInt(WidgetTask.openYESNOBox(shlSonyericsson, "Do you want to permanently identify this device as \n"+Devices.getCurrent().getName()+"?"));
         				if (response == SWT.YES)
         					Devices.getCurrent().addRecognitionToList(prop);
         			}
@@ -967,10 +964,12 @@ public class MainSWT {
     			MyLogger.getLogger().debug("End of identification");
     		}
     	}
-    	File f = new File(OS.getWorkDir()+File.separator+"custom"+File.separator+"apps_saved"+File.separator+Devices.getCurrent().getId());
-    	f.mkdir();
-    	f = new File(OS.getWorkDir()+File.separator+"custom"+File.separator+"clean"+File.separator+Devices.getCurrent().getId());
-    	f.mkdir();
+    	try {
+	    	File f = new File(OS.getWorkDir()+File.separator+"custom"+File.separator+"apps_saved"+File.separator+Devices.getCurrent().getId());
+	    	f.mkdir();
+	    	f = new File(OS.getWorkDir()+File.separator+"custom"+File.separator+"clean"+File.separator+Devices.getCurrent().getId());
+	    	f.mkdir();
+    	} catch (NullPointerException e) {}
 	}
 
 	public void doGiveRoot(boolean hasRoot) {
@@ -999,8 +998,10 @@ public class MainSWT {
 		WidgetTask.setEnabled(mntmRawBackup,hasRoot);
 		WidgetTask.setEnabled(tltmAskRoot,!hasRoot);
 		if (!Devices.isWaitingForReboot())
-			if (hasRoot)
+			if (hasRoot) {
 				MyLogger.getLogger().info("Root Access Allowed");
+				AdbUtility.antiRic();
+			}
 			else
 				MyLogger.getLogger().info("Root access denied");
     }
