@@ -6,6 +6,7 @@ import gui.tools.DeviceApps;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
+
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -20,6 +21,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ListViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
@@ -34,14 +36,18 @@ public class Cleaner extends Dialog {
 	protected Shell shlDecruptWizard;
 	ListViewer listViewerInstalled;
 	ListViewer listViewerToRemove;
-	Vector installed = new Vector();
-	Vector toremove = new Vector();
-	Vector result = null;
+	ListViewer listViewerAvailable;
+	ListViewer listViewerToInstall;
+	Vector<String> installed = new Vector<String>();
+	Vector<String> toremove = new Vector<String>();
+	Vector<String> available = new Vector<String>();
+	Vector<String> toinstall = new Vector<String>();
 	private List listInstalled;
 	private List listToRemove;
 	private Button btnCancel;
 	private Composite compositeButtongroup1;
 	DeviceApps apps;
+	Combo comboProfile;
 
 	/**
 	 * Create the dialog.
@@ -56,10 +62,30 @@ public class Cleaner extends Dialog {
 	 * Open the dialog.
 	 * @return the result
 	 */
-	public Vector open() {
-		createContents();
+	public DeviceApps open() {
 		init();
+		createContents();
 		WidgetsTool.setSize(shlDecruptWizard);		
+		Button btnProfile = new Button(shlDecruptWizard, SWT.NONE);
+		btnProfile.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ProfileSave save = new ProfileSave(shlDecruptWizard,SWT.PRIMARY_MODAL | SWT.SHEET);
+				save.open(apps);
+				comboProfile.removeAll();
+				Iterator<String> itprofiles = apps.getProfiles().iterator();
+				while (itprofiles.hasNext()) {
+					comboProfile.add(itprofiles.next());
+				}
+				comboProfile.select(comboProfile.indexOf(apps.getCurrentProfile()));
+				init();
+			}
+		});
+		FormData fd_btnProfile = new FormData();
+		fd_btnProfile.top = new FormAttachment(btnCancel, 0, SWT.TOP);
+		fd_btnProfile.left = new FormAttachment(listInstalled, 0, SWT.LEFT);
+		btnProfile.setLayoutData(fd_btnProfile);
+		btnProfile.setText("Save profile");
 		shlDecruptWizard.open();
 		shlDecruptWizard.layout();
 		Display display = getParent().getDisplay();
@@ -68,7 +94,7 @@ public class Cleaner extends Dialog {
 				display.sleep();
 			}
 		}
-		return result;
+		return apps;
 	}
 
 	/**
@@ -82,6 +108,7 @@ public class Cleaner extends Dialog {
 		
 		listViewerInstalled = new ListViewer(shlDecruptWizard, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
 		listInstalled = listViewerInstalled.getList();
+		listViewerInstalled.setSorter(new ViewerSorter());
 		FormData fd_listInstalled = new FormData();
 		fd_listInstalled.bottom = new FormAttachment(0, 229);
 		fd_listInstalled.right = new FormAttachment(0, 223);
@@ -123,6 +150,7 @@ public class Cleaner extends Dialog {
 		lblInstalled.setText("Installed on device");
 		
 		listViewerToRemove = new ListViewer(shlDecruptWizard, SWT.BORDER | SWT.V_SCROLL);
+		listViewerToRemove.setSorter(new ViewerSorter());
 		listToRemove = listViewerToRemove.getList();
 		FormData fd_listToRemove = new FormData();
 		fd_listToRemove.bottom = new FormAttachment(listInstalled, 0, SWT.BOTTOM);
@@ -172,6 +200,7 @@ public class Cleaner extends Dialog {
 		btnCancel.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				apps=null;
 				shlDecruptWizard.dispose();
 			}
 		});
@@ -185,7 +214,7 @@ public class Cleaner extends Dialog {
 		btnClean.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				if (toremove.size()>0) result=toremove;
+				apps.saveProfile();
 				shlDecruptWizard.dispose();
 			}
 		});
@@ -206,15 +235,28 @@ public class Cleaner extends Dialog {
 		lblProfile.setLayoutData(gd_lblProfile);
 		lblProfile.setText("Profile :");
 		
-		Combo comboProfile = new Combo(compositeProfile, SWT.READ_ONLY);
+		comboProfile = new Combo(compositeProfile, SWT.READ_ONLY);
+		comboProfile.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				if (!apps.getCurrentProfile().equals(comboProfile.getText())) {
+					apps.setProfile(comboProfile.getText());
+					init();
+					listViewerInstalled.refresh();
+					listViewerToRemove.refresh();
+					listViewerToInstall.refresh();
+					listViewerAvailable.refresh();
+				}
+			}
+		});
 		comboProfile.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 		comboProfile.setText("default");
-		apps = new DeviceApps();
+		
 		Iterator<String> itprofiles = apps.getProfiles().iterator();
 		while (itprofiles.hasNext()) {
 			comboProfile.add(itprofiles.next());
 		}
-		apps.setProfile("default");
+		comboProfile.select(comboProfile.indexOf("default"));
 
 
 		
@@ -241,6 +283,7 @@ public class Cleaner extends Dialog {
 					String f = (String)i.next();
 					installed.remove(f);
 					toremove.add(f);
+					apps.setSafe(apps.getApkName(f));
 					listViewerInstalled.refresh();
 					listViewerToRemove.refresh();
 				}
@@ -263,6 +306,7 @@ public class Cleaner extends Dialog {
 					String f = (String)i.next();
 					toremove.remove(f);
 					installed.add(f);
+					apps.setUnsafe(apps.getApkName(f));
 					listViewerInstalled.refresh();
 					listViewerToRemove.refresh();
 				}
@@ -283,15 +327,42 @@ public class Cleaner extends Dialog {
 		lblToInstall.setLayoutData(fd_lblToInstall);
 		lblToInstall.setText("To be installed :");
 		
-		ListViewer listViewerAvailable = new ListViewer(shlDecruptWizard, SWT.BORDER | SWT.V_SCROLL);
+		listViewerAvailable = new ListViewer(shlDecruptWizard, SWT.BORDER | SWT.V_SCROLL);
+		listViewerAvailable.setSorter(new ViewerSorter());
 		List listAvailable = listViewerAvailable.getList();
 		FormData fd_listAvailable = new FormData();
 		fd_listAvailable.top = new FormAttachment(lblAvailable, 6);
 		fd_listAvailable.right = new FormAttachment(listInstalled, 0, SWT.RIGHT);
 		fd_listAvailable.left = new FormAttachment(0, 10);
 		listAvailable.setLayoutData(fd_listAvailable);
+	    listViewerAvailable.setContentProvider(new IStructuredContentProvider() {
+	        public Object[] getElements(Object inputElement) {
+	          Vector v = (Vector)inputElement;
+	          return v.toArray();
+	        }
+	        
+	        public void dispose() {
+	        }
+	   
+	        public void inputChanged(
+	          Viewer viewer,
+	          Object oldInput,
+	          Object newInput) {
+	        }
+	      });
+	    
+	    listViewerAvailable.setLabelProvider(new LabelProvider() {
+	        public Image getImage(Object element) {
+	          return null;
+	        }
+	   
+	        public String getText(Object element) {
+	          return (String)element;
+	        }
+	      });
 		
-		ListViewer listViewerToInstall = new ListViewer(shlDecruptWizard, SWT.BORDER | SWT.V_SCROLL);
+		listViewerToInstall = new ListViewer(shlDecruptWizard, SWT.BORDER | SWT.V_SCROLL);
+		listViewerToInstall.setSorter(new ViewerSorter());
 		List listToInstall = listViewerToInstall.getList();
 		fd_listAvailable.bottom = new FormAttachment(listToInstall, 0, SWT.BOTTOM);
 		FormData fd_listToInstall = new FormData();
@@ -301,6 +372,31 @@ public class Cleaner extends Dialog {
 		fd_listToInstall.right = new FormAttachment(100, -11);
 		listToInstall.setLayoutData(fd_listToInstall);
 		
+	    listViewerToInstall.setContentProvider(new IStructuredContentProvider() {
+	        public Object[] getElements(Object inputElement) {
+	          Vector v = (Vector)inputElement;
+	          return v.toArray();
+	        }
+	        
+	        public void dispose() {
+	        }
+	   
+	        public void inputChanged(
+	          Viewer viewer,
+	          Object oldInput,
+	          Object newInput) {
+	        }
+	      });
+	    
+	    listViewerToInstall.setLabelProvider(new LabelProvider() {
+	        public Image getImage(Object element) {
+	          return null;
+	        }
+	   
+	        public String getText(Object element) {
+	          return (String)element;
+	        }
+	      });
 		
 		Composite compositeButtongroup2 = new Composite(shlDecruptWizard, SWT.NONE);
 		compositeButtongroup2.setLayout(new GridLayout(1, false));
@@ -316,6 +412,21 @@ public class Cleaner extends Dialog {
 		btnAddToBeInstalled.setLayoutData(gd_btnAddToBeInstalled);
 		btnAddToBeInstalled.setText("->");
 		new Label(compositeProfile, SWT.NONE);
+		btnAddToBeInstalled.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = (IStructuredSelection)listViewerAvailable.getSelection();
+				Iterator i = selection.iterator();
+				while (i.hasNext()) {
+					String f = (String)i.next();
+					toinstall.add(f);
+					available.remove(f);
+					apps.setUnsafe(apps.getApkName(f));
+					listViewerToInstall.refresh();
+					listViewerAvailable.refresh();
+				}
+			}
+		});
 		
 		Button btnAddToAvailable = new Button(compositeButtongroup2, SWT.NONE);
 		GridData gd_btnAddToAvailable = new GridData(SWT.CENTER, SWT.CENTER, false, false, 1, 1);
@@ -324,18 +435,61 @@ public class Cleaner extends Dialog {
 		btnAddToAvailable.setLayoutData(gd_btnAddToAvailable);
 		btnAddToAvailable.setText("<-");
 		new Label(compositeProfile, SWT.NONE);
-
+		btnAddToAvailable.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				IStructuredSelection selection = (IStructuredSelection)listViewerToInstall.getSelection();
+				Iterator i = selection.iterator();
+				while (i.hasNext()) {
+					String f = (String)i.next();
+					toinstall.remove(f);
+					available.add(f);
+					apps.setSafe(apps.getApkName(f));
+					listViewerToInstall.refresh();
+					listViewerAvailable.refresh();
+				}
+			}
+		});
+		listViewerInstalled.setInput(installed);
+		listViewerToRemove.setInput(toremove);
+		listViewerToInstall.setInput(toinstall);
+		listViewerAvailable.setInput(available);
 	}
 	
 	public void init() {
-		Enumeration<String> e1 = apps.getInstalled();
+		if (apps==null)
+			apps = new DeviceApps();
+		Enumeration<String> e1 = apps.getInstalled(false).elements();
+		installed.clear();
+		toremove.clear();
+		toinstall.clear();
+		available.clear();
 		while (e1.hasMoreElements()) {
 			String elem = e1.nextElement();
 			installed.add(elem);
 //			ListItem li = new ListItem(elem, apps.getRealName(elem),Color.black,Color.white);
 //			listInstalledModel.addElement(li);
 		}
-		listViewerInstalled.setInput(installed);
-		listViewerToRemove.setInput(toremove);
+		e1 = apps.getToBeRemoved(false).elements();
+		while (e1.hasMoreElements()) {
+			String elem = e1.nextElement();
+			toremove.add(elem);
+//			ListItem li = new ListItem(elem, apps.getRealName(elem),Color.black,Color.white);
+//			listInstalledModel.addElement(li);
+		}
+		e1 = apps.getToBeInstalled(false).elements();
+		while (e1.hasMoreElements()) {
+			String elem = e1.nextElement();
+			toinstall.add(elem);
+//			ListItem li = new ListItem(elem, apps.getRealName(elem),Color.black,Color.white);
+//			listInstalledModel.addElement(li);
+		}
+		e1 = apps.getRemoved(false).elements();
+		while (e1.hasMoreElements()) {
+			String elem = e1.nextElement();
+			available.add(elem);
+//			ListItem li = new ListItem(elem, apps.getRealName(elem),Color.black,Color.white);
+//			listInstalledModel.addElement(li);
+		}
 	}
 }

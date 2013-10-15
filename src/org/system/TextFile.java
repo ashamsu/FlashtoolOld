@@ -83,6 +83,10 @@ public class TextFile {
 		IOUtils.write(content, new FileOutputStream(fFileName), fEncoding);	
 	}
 	
+	public String getFileName() {
+		return fFileName;
+	}
+	
 	// PRIVATE 
 	protected String fFileName;
 	private final String fEncoding;

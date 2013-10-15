@@ -12,7 +12,9 @@ import java.util.Vector;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.Deflater;
+
 import linuxlib.JUsb;
+
 import org.adb.AdbUtility;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -55,13 +57,16 @@ import org.system.OS;
 import org.system.StatusEvent;
 import org.system.StatusListener;
 import org.system.VersionChecker;
+
 import flashsystem.Bundle;
 import flashsystem.X10flash;
 import gui.tools.APKInstallJob;
 import gui.tools.BackupSystemJob;
 import gui.tools.BackupTAJob;
 import gui.tools.BusyboxInstallJob;
+import gui.tools.CleanJob;
 import gui.tools.DecryptJob;
+import gui.tools.DeviceApps;
 import gui.tools.FTDExplodeJob;
 import gui.tools.FlashJob;
 import gui.tools.GetULCodeJob;
@@ -749,9 +754,16 @@ public class MainSWT {
 		tltmClean.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				//Cleaner clean = new Cleaner(shlSonyericsson,SWT.PRIMARY_MODAL | SWT.SHEET);
-				//clean.open();
-				WidgetTask.openOKBox(shlSonyericsson, "To be implemented");
+				Cleaner clean = new Cleaner(shlSonyericsson,SWT.PRIMARY_MODAL | SWT.SHEET);
+				DeviceApps result = clean.open();
+				if (result != null) {
+					CleanJob cj = new CleanJob("Clean Job");
+					cj.setDeviceApps(result);
+					cj.schedule();
+				}
+				else
+					MyLogger.getLogger().info("Cleaning canceled");
+				//WidgetTask.openOKBox(shlSonyericsson, "To be implemented");
 			}
 		});
 		tltmClean.setToolTipText("Clean ROM");
@@ -964,12 +976,6 @@ public class MainSWT {
     			MyLogger.getLogger().debug("End of identification");
     		}
     	}
-    	try {
-	    	File f = new File(OS.getWorkDir()+File.separator+"custom"+File.separator+"apps_saved"+File.separator+Devices.getCurrent().getId());
-	    	f.mkdir();
-	    	f = new File(OS.getWorkDir()+File.separator+"custom"+File.separator+"clean"+File.separator+Devices.getCurrent().getId());
-	    	f.mkdir();
-    	} catch (NullPointerException e) {}
 	}
 
 	public void doGiveRoot(boolean hasRoot) {

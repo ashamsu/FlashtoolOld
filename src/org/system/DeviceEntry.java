@@ -4,6 +4,7 @@ import gui.tools.WidgetTask;
 
 import java.io.File;
 import java.util.HashSet;
+
 import org.adb.AdbUtility;
 import org.eclipse.swt.widgets.Display;
 
@@ -113,6 +114,14 @@ public class DeviceEntry {
 	
 	public String getDeviceDir() {
 		return OS.getWorkDir()+fsep+"devices"+fsep+getId();
+	}
+	
+	public String getCleanDir() {
+		return OS.getWorkDir()+fsep+"custom"+fsep+"mydevices"+fsep+getSerial()+fsep+"clean"+fsep+getBuildId();
+	}
+
+	public String getAppsDir() {
+		return OS.getWorkDir()+fsep+"custom"+fsep+"mydevices"+fsep+getSerial()+fsep+"apps"+fsep+getBuildId();
 	}
 	
 	public String getBuildProp() {

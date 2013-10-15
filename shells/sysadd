@@ -1,5 +1,7 @@
 export PATH=DEVICEWORKDIR:$PATH
 
+busybox mount -o remount,rw /system
+
 for i in `busybox cat DEVICEWORKDIR/listappsadd`
 do
    busybox cp DEVICEWORKDIR/$i /system/app
@@ -8,3 +10,5 @@ do
    busybox rm DEVICEWORKDIR/$i
 done
 busybox rm DEVICEWORKDIR/listappsadd
+
+busybox mount -o remount,ro /system

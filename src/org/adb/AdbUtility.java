@@ -528,6 +528,7 @@ public class AdbUtility  {
 				String[] list = psres.split(" ");
 				String ric = list[list.length-1].trim();
 				AdbUtility.run("su -c 'mount -o remount,rw / && busybox mv "+ric+" "+ric+"c && mount -o remount,ro / && busybox pkill "+ric+"'");
+				MyLogger.getLogger().info("ric service stopped successfully");
 			}
 		}
 		catch (Exception e) {
