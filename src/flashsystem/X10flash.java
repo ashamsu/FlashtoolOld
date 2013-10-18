@@ -71,7 +71,12 @@ public class X10flash {
     		MyLogger.getLogger().info("Flashing "+ta.getName());
 			Vector<TaEntry> entries = ta.entries();
 			for (int i=0;i<entries.size();i++) {
-				sendTAUnit(entries.get(i));
+				TaEntry tent = entries.get(i);
+				if (tent.getPartition().equals(_8a4unit.getPartition()) && tent.getData().equals(_8a4unit.getData())) {
+					MyLogger.getLogger().info("Custumization reset is now based on UI choice");
+				}
+				else
+					sendTAUnit(tent);
 			}
     	}
     	catch (TaParseException tae) {
