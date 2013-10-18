@@ -28,17 +28,12 @@
 	<target name="core release" depends="clean,ressources">
         <mkdir dir ="../Deploy/FlashTool"/>
         <mkdir dir ="../Deploy/FlashTool/custom/"/>
-        <mkdir dir ="../Deploy/FlashTool/custom/apps_saved"/>
         <mkdir dir ="../Deploy/FlashTool/custom/root"/>
         <mkdir dir ="../Deploy/FlashTool/custom/shells"/>
-        <mkdir dir ="../Deploy/FlashTool/custom/apps"/>
-        <mkdir dir ="../Deploy/FlashTool/custom/clean"/>
     	<mkdir dir ="../Deploy/FlashTool/custom/features"/>
-		<mkdir dir ="../Deploy/FlashTool/custom/ta"/>
 		<mkdir dir ="../Deploy/FlashTool/custom/sin"/>
-    	<mkdir dir ="../Deploy/FlashTool/firmwares"/>
-        <mkdir dir ="../Deploy/FlashTool/custom/clean"/>
-		<mkdir dir ="../Deploy/FlashTool/custom/clean/X10"/>
+		<mkdir dir ="../Deploy/FlashTool/custom/mydevices"/>
+		<mkdir dir ="../Deploy/FlashTool/firmwares"/>
         <mkdir dir="../Deploy/FlashTool/x10flasher_lib"/>
         <mkdir dir="../Deploy/FlashTool/x10flasher_lib/langs"/>
         <mkdir dir="../Deploy/FlashTool/drivers"/>
