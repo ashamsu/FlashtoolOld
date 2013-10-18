@@ -282,8 +282,7 @@ public class MainSWT {
 		mntmPerfevent.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				WidgetTask.openOKBox(shlSonyericsson, "Not implemented yet");
-				//doRoot("doRootPerfEvent");
+				doRoot("doRootPerfEvent");
 			}
 		});
 		mntmPerfevent.setText("Force PerfEvent");
