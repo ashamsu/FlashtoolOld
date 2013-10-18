@@ -76,7 +76,7 @@ public class Cleaner extends Dialog {
 			}
 		});
 		FormData fd_btnProfile = new FormData();
-		fd_btnProfile.top = new FormAttachment(btnCancel, 0, SWT.TOP);
+		fd_btnProfile.bottom = new FormAttachment(btnCancel, 0, SWT.BOTTOM);
 		fd_btnProfile.left = new FormAttachment(listInstalled, 0, SWT.LEFT);
 		btnProfile.setLayoutData(fd_btnProfile);
 		btnProfile.setText("Save profile");
@@ -97,8 +97,8 @@ public class Cleaner extends Dialog {
 			}
 		});
 		FormData fd_btnSaveAsNew = new FormData();
-		fd_btnSaveAsNew.bottom = new FormAttachment(btnCancel, 0, SWT.BOTTOM);
 		fd_btnSaveAsNew.left = new FormAttachment(btnProfile, 5);
+		fd_btnSaveAsNew.bottom = new FormAttachment(btnCancel, 0, SWT.BOTTOM);
 		btnSaveAsNew.setLayoutData(fd_btnSaveAsNew);
 		btnSaveAsNew.setText("Save as new profile");
 		shlDecruptWizard.open();
