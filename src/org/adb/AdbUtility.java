@@ -522,12 +522,21 @@ public class AdbUtility  {
 	
 	public static void antiRic() {
 		try {
-			String psres = AdbUtility.run("ps|busybox grep bin/ric").trim();
-			if (psres.length()>0) {
+			Scanner scan = new Scanner(AdbUtility.run("ps"));
+			String path = "";
+			String pid = "";
+			while (scan.hasNextLine()) {
+				String line = scan.nextLine();
+				if (line.contains("bin/ric")) {
+					String[] fields = line.split("\\s+");
+					pid = fields[1];
+					path = fields[fields.length-1];
+				}
+			}
+			scan.close();
+			if (path.length()>0) {
 				MyLogger.getLogger().info("Stopping ric service");
-				String[] list = psres.split(" ");
-				String ric = list[list.length-1].trim();
-				AdbUtility.run("su -c 'mount -o remount,rw / && busybox mv "+ric+" "+ric+"c && mount -o remount,ro / && busybox pkill "+ric+"'");
+				AdbUtility.run("su -c 'mount -o remount,rw / && mv "+path+" "+path+"c && mount -o remount,ro / && kill -9 "+pid+"'");
 				MyLogger.getLogger().info("ric service stopped successfully");
 			}
 		}

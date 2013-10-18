@@ -30,6 +30,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 
 public class Cleaner extends Dialog {
 
@@ -70,6 +72,19 @@ public class Cleaner extends Dialog {
 		btnProfile.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				apps.saveProfile();
+			}
+		});
+		FormData fd_btnProfile = new FormData();
+		fd_btnProfile.top = new FormAttachment(btnCancel, 0, SWT.TOP);
+		fd_btnProfile.left = new FormAttachment(listInstalled, 0, SWT.LEFT);
+		btnProfile.setLayoutData(fd_btnProfile);
+		btnProfile.setText("Save profile");
+		
+		Button btnSaveAsNew = new Button(shlDecruptWizard, SWT.NONE);
+		btnSaveAsNew.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
 				ProfileSave save = new ProfileSave(shlDecruptWizard,SWT.PRIMARY_MODAL | SWT.SHEET);
 				save.open(apps);
 				comboProfile.removeAll();
@@ -81,11 +96,11 @@ public class Cleaner extends Dialog {
 				init();
 			}
 		});
-		FormData fd_btnProfile = new FormData();
-		fd_btnProfile.top = new FormAttachment(btnCancel, 0, SWT.TOP);
-		fd_btnProfile.left = new FormAttachment(listInstalled, 0, SWT.LEFT);
-		btnProfile.setLayoutData(fd_btnProfile);
-		btnProfile.setText("Save profile");
+		FormData fd_btnSaveAsNew = new FormData();
+		fd_btnSaveAsNew.bottom = new FormAttachment(btnCancel, 0, SWT.BOTTOM);
+		fd_btnSaveAsNew.left = new FormAttachment(btnProfile, 5);
+		btnSaveAsNew.setLayoutData(fd_btnSaveAsNew);
+		btnSaveAsNew.setText("Save as new profile");
 		shlDecruptWizard.open();
 		shlDecruptWizard.layout();
 		Display display = getParent().getDisplay();

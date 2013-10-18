@@ -96,7 +96,7 @@ public class DeviceUpdates extends Dialog {
 		btnNewButton.setText("Close");
 		
 		lblInfo = new Label(shlDeviceUpdateChecker, SWT.NONE);
-		lblInfo.setBounds(11, 244, 210, 15);
+		lblInfo.setBounds(11, 244, 342, 15);
 
 		FillJob fj = new FillJob("Update Search");
 		fj.schedule();
