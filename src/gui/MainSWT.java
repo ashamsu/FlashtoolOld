@@ -142,14 +142,14 @@ public class MainSWT {
 			}
 		};
 		killAdbandFastboot();
-		phoneWatchdog = new AdbPhoneThread();
-		phoneWatchdog.start();
-		phoneWatchdog.addStatusListener(phoneStatus);
+		shlSonyericsson.open();
+		shlSonyericsson.layout();
 		vcheck = new VersionChecker();
 		vcheck.setMessageFrame(shlSonyericsson);
 		vcheck.start();
-		shlSonyericsson.open();
-		shlSonyericsson.layout();
+		phoneWatchdog = new AdbPhoneThread();
+		phoneWatchdog.start();
+		phoneWatchdog.addStatusListener(phoneStatus);
 		while (!shlSonyericsson.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
