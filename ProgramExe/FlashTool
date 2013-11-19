@@ -63,12 +63,12 @@ then
          			ln -sf udev/libusbx-1.0.so.0.1.0 ./x10flasher_lib/linux/lib64/libusbx-1.0.so
 			fi
     	     		ln -sf swt64.jar ./x10flasher_lib/swtlin/swt.jar
-    			chmod 755 ./x10flasher_lib/adb.linux.64
- 			ln -sf adb.linux.64 ./x10flasher_lib/adb.linux
-    			chmod 755 ./x10flasher_lib/fastboot.linux.64
- 			ln -sf fastboot.linux.64 ./x10flasher_lib/fastboot.linux
-    			chmod 755 ./x10flasher_lib/unyaffs.linux.64
- 			ln -sf unyaffs.linux.64 ./x10flasher_lib/unyaffs.linux
+    			chmod 755 ./x10flasher_lib/adb.linux.x64
+ 			ln -sf adb.linux.x64 ./x10flasher_lib/adb.linux
+    			chmod 755 ./x10flasher_lib/fastboot.linux.x64
+ 			ln -sf fastboot.linux.x64 ./x10flasher_lib/fastboot.linux
+    			chmod 755 ./x10flasher_lib/unyaffs.linux.x64
+ 			ln -sf unyaffs.linux.x64 ./x10flasher_lib/unyaffs.linux
          	else
          		export LD_LIBRARY_PATH=./x10flasher_lib/linux/lib32
 			UDEV=$(ldd x10flasher_lib/linux/lib32/udev/libusbx-1.0.so.0.1.0 |grep found|wc -l)
