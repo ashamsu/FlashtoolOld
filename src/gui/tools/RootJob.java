@@ -52,8 +52,8 @@ public class RootJob extends Job {
     			doRootAdbRestore();
     		if (_action.equals("doRootServiceMenu"))
     			doRootServiceMenu();
-    		if (_action.equals("doRootPerfEvent"))
-    			doRootPerfEvent();
+    		if (_action.equals("doRootRunRootShell"))
+    			doRootRunRootShell();
     		return Status.OK_STATUS;
     	}
     	catch (Exception e) {
@@ -288,21 +288,33 @@ public class RootJob extends Job {
 		}
 	}
 
-	public void doRootPerfEvent() {
+	public void doRootRunRootShell() {
 		try {
 			if (pck.length()>0) {
 				doPushRootFiles(pck,false);
-				AdbUtility.push(OS.getWorkDir()+File.separator+"custom"+File.separator+"root"+File.separator+"perfevent"+File.separator+"doomed2", "/data/local/tmp/");
-				AdbUtility.push(OS.getWorkDir()+File.separator+"custom"+File.separator+"root"+File.separator+"perfevent"+File.separator+"run_root_shell", "/data/local/tmp/");
-				AdbUtility.run("chmod 755 /data/local/tmp/doomed2");
-				AdbUtility.run("chmod 755 /data/local/tmp/run_root_shell");
-				AdbUtility.run("/data/local/tmp/run_root_shell");
-				if (AdbUtility.hasRootPerms()) {
-					MyLogger.getLogger().info("Device rooted. Now cleaning and rebooting. Please wait");
-					//FTShell shell = new FTShell("rebootperfevent");
-					//shell.runRoot();
-					//shell.clean();
+				String device = AdbUtility.run("/system/bin/getprop "+ "ro.product.model");
+				String buildid = AdbUtility.run("/system/bin/getprop "+ "ro.build.display.id");
+				String config = device + "_" + buildid;
+				if (new File(OS.getWorkDir()+File.separator+"custom"+File.separator+"root"+File.separator+"run_root_shell"+File.separator+config).exists()) {
+					AdbUtility.push(OS.getWorkDir()+File.separator+"custom"+File.separator+"root"+File.separator+"run_root_shell"+File.separator+config, "/data/local/tmp/");
 				}
+				AdbUtility.push(OS.getWorkDir()+File.separator+"custom"+File.separator+"root"+File.separator+"run_root_shell"+File.separator+"install_root.sh", "/data/local/tmp/");
+				AdbUtility.push(OS.getWorkDir()+File.separator+"custom"+File.separator+"root"+File.separator+"run_root_shell"+File.separator+"run_root_shell", "/data/local/tmp/");
+				AdbUtility.run("chmod 755 /data/local/tmp/install_root.sh");
+				AdbUtility.run("chmod 755 /data/local/tmp/run_root_shell");
+				AdbUtility.run("/data/local/tmp/run_root_shell -c /data/local/tmp/install_root.sh");
+				if (AdbUtility.hasRootPerms()) {
+					MyLogger.getLogger().info("Device rooted.");
+				}
+				else {
+					MyLogger.getLogger().info("Root failed");;
+				}
+				MyLogger.getLogger().info("Cleaning workdir");
+				AdbUtility.run("rm /data/local/tmp/su");
+				AdbUtility.run("rm /data/local/tmp/Superuser.apk");
+				AdbUtility.run("rm /data/local/tmp/busybox");
+				AdbUtility.run("rm /data/local/tmp/run_root_shell");
+				AdbUtility.run("rm /data/local/tmp/install_root.sh");
 			}
 			else {
 				MyLogger.getLogger().info("Canceled");

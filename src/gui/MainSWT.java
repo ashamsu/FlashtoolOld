@@ -142,14 +142,14 @@ public class MainSWT {
 			}
 		};
 		killAdbandFastboot();
-		shlSonyericsson.open();
-		shlSonyericsson.layout();
-		vcheck = new VersionChecker();
-		vcheck.setMessageFrame(shlSonyericsson);
-		vcheck.start();
 		phoneWatchdog = new AdbPhoneThread();
 		phoneWatchdog.start();
 		phoneWatchdog.addStatusListener(phoneStatus);
+		vcheck = new VersionChecker();
+		vcheck.setMessageFrame(shlSonyericsson);
+		vcheck.start();
+		shlSonyericsson.open();
+		shlSonyericsson.layout();
 		while (!shlSonyericsson.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -278,14 +278,14 @@ public class MainSWT {
 		});
 		mntmForceServicemenu.setText("Force ServiceMenu");
 		
-		MenuItem mntmPerfevent = new MenuItem(menu_10, SWT.NONE);
-		mntmPerfevent.addSelectionListener(new SelectionAdapter() {
+		MenuItem mntmRunRootShell = new MenuItem(menu_10, SWT.NONE);
+		mntmRunRootShell.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				doRoot("doRootPerfEvent");
+				doRoot("doRootRunRootShell");
 			}
 		});
-		mntmPerfevent.setText("Force PerfEvent");
+		mntmRunRootShell.setText("Force Run Root Shell");
 		
 		MenuItem mntmBackupSystemApps = new MenuItem(menu_8, SWT.NONE);
 		mntmBackupSystemApps.addSelectionListener(new SelectionAdapter() {
