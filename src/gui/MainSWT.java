@@ -56,8 +56,6 @@ import org.system.GlobalConfig;
 import org.system.OS;
 import org.system.StatusEvent;
 import org.system.StatusListener;
-import org.system.VersionChecker;
-
 import flashsystem.Bundle;
 import flashsystem.X10flash;
 import gui.tools.APKInstallJob;
@@ -74,6 +72,7 @@ import gui.tools.MsgBox;
 import gui.tools.OldUnlockJob;
 import gui.tools.RawTAJob;
 import gui.tools.RootJob;
+import gui.tools.VersionCheckerJob;
 import gui.tools.WidgetTask;
 import gui.tools.WidgetsTool;
 import gui.tools.Yaffs2Job;
@@ -98,7 +97,7 @@ public class MainSWT {
 	protected MenuItem mntmInstallBusybox;
 	protected MenuItem mntmRawBackup;
 	protected MenuItem mntmRawRestore;
-	protected VersionChecker vcheck=null;
+	protected VersionCheckerJob vcheck; 
 	
 	/**
 	 * Open the window.
@@ -145,9 +144,6 @@ public class MainSWT {
 		phoneWatchdog = new AdbPhoneThread();
 		phoneWatchdog.start();
 		phoneWatchdog.addStatusListener(phoneStatus);
-		vcheck = new VersionChecker();
-		vcheck.setMessageFrame(shlSonyericsson);
-		vcheck.start();
 		shlSonyericsson.open();
 		shlSonyericsson.layout();
 		while (!shlSonyericsson.isDisposed()) {
@@ -179,8 +175,10 @@ public class MainSWT {
 		shlSonyericsson.addListener(SWT.Close, new Listener() {
 		      public void handleEvent(Event event) {
 		    	  exitProgram();
+		    	  shlSonyericsson.dispose();
 		      }
 		    });
+
 		shlSonyericsson.setSize(794, 451);
 		shlSonyericsson.setText("Sony Mobile Flasher by Androxyde");
 		shlSonyericsson.setImage(SWTResourceManager.getImage(MainSWT.class, "/gui/ressources/icons/flash_32.png"));
@@ -829,6 +827,9 @@ public class MainSWT {
 		MyLogger.getLogger().info("Flashtool "+About.getVersion());
 		if (JUsb.getVersion().length()>0)
 			MyLogger.getLogger().info(JUsb.getVersion());
+		vcheck = new VersionCheckerJob("Version Checker Job");
+		vcheck.setMessageFrame(shlSonyericsson);
+		vcheck.schedule();
 	}
 
 	public static void stopPhoneWatchdog() {
@@ -855,10 +856,6 @@ public class MainSWT {
 				killAdbandFastboot();
 			}
 			vcheck.done();
-			try {
-				vcheck.join();
-			}
-			catch (InterruptedException e) {}
 		}
 		catch (Exception e) {}		
 	}

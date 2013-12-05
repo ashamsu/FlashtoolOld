@@ -3,8 +3,9 @@ package org.system;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
-public class DNSResolver implements Runnable {
-    private String domain;
+public class DNSResolver extends Thread {
+    
+	private String domain;
     private InetAddress inetAddr=null;
 
     public DNSResolver(String domain) {
