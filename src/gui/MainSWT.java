@@ -851,6 +851,8 @@ public class MainSWT {
 
 	public void exitProgram() {
 		try {
+			MyLogger.disableTextArea();
+			MyLogger.setLevel(MyLogger.curlevel);
 			MyLogger.getLogger().info("Stopping watchdogs and exiting ...");
 			if (GlobalConfig.getProperty("killadbonexit").equals("yes")) {
 				killAdbandFastboot();
