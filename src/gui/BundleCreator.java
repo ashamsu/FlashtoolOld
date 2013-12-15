@@ -44,6 +44,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.GridData;
 import org.system.DeviceEntry;
 import org.system.OS;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 
 public class BundleCreator extends Dialog {
 
@@ -51,6 +53,7 @@ public class BundleCreator extends Dialog {
 	protected Shell shlBundler;
 	private Text sourceFolder;
 	private Text device;
+	private String deviceId="";
 	private Text branding;
 	private Text version;
 	Vector files = new Vector();
@@ -245,14 +248,14 @@ public class BundleCreator extends Dialog {
 					showErrorMessageBox("Device, Versio, Branding : all fields must be set");
 					return;
 				}
-				File f = new File(OS.getWorkDir()+File.separator+"firmwares"+File.separator+device.getText()+"_"+version.getText()+"_"+branding.getText()+".ftf");
+				File f = new File(OS.getWorkDir()+File.separator+"firmwares"+File.separator+deviceId+"_"+version.getText()+"_"+branding.getText()+".ftf");
 				if (f.exists()) {
 					showErrorMessageBox("This bundle name already exists");
 					return;
 				}
 				Bundle b = new Bundle();
 				b.setMeta(meta);
-				b.setDevice(device.getText());
+				b.setDevice(deviceId);
 				b.setVersion(version.getText());
 				b.setBranding(branding.getText());
 				b.setCmd25(btnNoFinalVerification.getSelection()?"true":"false");
@@ -451,6 +454,18 @@ public class BundleCreator extends Dialog {
 		lblNewLabel.setText("Device :");
 		
 		device = new Text(composite_1, SWT.BORDER);
+		device.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseDoubleClick(MouseEvent e) {
+				String result = WidgetTask.openDeviceSelector(shlBundler);
+				if (result.length()>0) {
+					DeviceEntry ent = new DeviceEntry(result);
+					device.setText(ent.getName());
+					deviceId=result;
+				}
+			}
+		});
+		device.setEditable(false);
 		GridData gd_device = new GridData(SWT.LEFT, SWT.CENTER, false, false, 1, 1);
 		gd_device.widthHint = 355;
 		device.setLayoutData(gd_device);
