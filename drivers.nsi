@@ -161,22 +161,32 @@ Section /o "Xperia Z1 L39h driver" SEC24
   File /r "Drivers\ADB\Xperia Z1 L39h driver\*"
 SectionEnd
   
-Section /o "Xperia UL Drivers" SEC25
+Section /o "Sony Z Ultra Google Play Edition driver" SEC25
+  SetOutPath "$TEMP\Flashtool\ADB\Sony Z Ultra Google Play Edition driver"
+  File /r "Drivers\ADB\Sony Z Ultra Google Play Edition driver\*"
+SectionEnd
+
+Section /o "Xperia Z1 f SO-02F driver" SEC26
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia_Z1_f_SO-02F_driver"
+  File /r "Drivers\ADB\Xperia_Z1_f_SO-02F_driver\*"
+SectionEnd
+
+Section /o "Xperia UL Drivers" SEC27
   SetOutPath "$TEMP\Flashtool\ADB\Xperia UL Drivers"
   File /r "Drivers\ADB\Xperia UL Drivers\*"
 SectionEnd
 
-Section /o "Xperia A driver" SEC26
+Section /o "Xperia A driver" SEC28
   SetOutPath "$TEMP\Flashtool\ADB\Xperia A driver"
   File /r "Drivers\ADB\Xperia A driver\*"
 SectionEnd
 
-Section /o "Flashmode Drivers" SEC27
+Section /o "Flashmode Drivers" SEC29
   SetOutPath "$TEMP\Flashtool\GordonGate"
   File /r "Drivers\GordonGate\*"
 SectionEnd
 
-Section /o "Fastboot Drivers" SEC28
+Section /o "Fastboot Drivers" SEC30
   SetOutPath "$TEMP\Flashtool\Fastboot"
   File /r "Drivers\FASTBOOT\*"
 SectionEnd
@@ -220,6 +230,10 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC22} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC23} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC24} ""
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC25} ""
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC26} ""
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC27} ""
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC28} ""
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit
