@@ -6,8 +6,8 @@ RequestExecutionLevel highest
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Flashtool Drivers"
-!define PRODUCT_VERSION "1.1"
-!define PRODUCT_PUBLISHER "Androxyde"
+!define PRODUCT_VERSION "1.2-20140204"
+!define PRODUCT_PUBLISHER "Androxyde & DooMLoRD"
 !define PRODUCT_WEB_SITE "http://androxyde.github.com/Flashtool/"
 
 
