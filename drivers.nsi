@@ -41,170 +41,171 @@ Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile ..\Deploy\Flashtool\drivers\Flashtool-drivers.exe
 ShowInstDetails show
 
-Section /o "Sony Ericsson X8 Drivers" SEC01
-  SetOutPath "$TEMP\Flashtool\ADB\Sony Ericsson X8 Drivers"
-  File /r "Drivers\ADB\Sony Ericsson X8 Drivers\*"
-SectionEnd
-
-Section /o "Sony Ericsson X10 Drivers" SEC02
-  SetOutPath "$TEMP\Flashtool\ADB\Sony Ericsson X10 Drivers"
-  File /r "Drivers\ADB\Sony Ericsson X10 Drivers\*"
-SectionEnd
-
-Section /o "Sony Ericsson X10 mini Drivers" SEC03
-  SetOutPath "$TEMP\Flashtool\ADB\Sony Ericsson X10 mini Drivers"
-  File /r "Drivers\ADB\Sony Ericsson X10 mini Drivers\*"
-SectionEnd
-
-Section /o "Sony Ericsson Xperia arc, Xperia neo, Xperia PLAY, Xperia acro IS11S, Xperia acro SO-02C drivers" SEC04
-  SetOutPath "$TEMP\Flashtool\ADB\Sony Ericsson Xperia arc, Xperia neo, Xperia PLAY, Xperia acro IS11S, Xperia acro SO-02C drivers"
-  File /r "Drivers\ADB\Sony Ericsson Xperia arc, Xperia neo, Xperia PLAY, Xperia acro IS11S, Xperia acro SO-02C drivers\*"
-SectionEnd
-
-Section /o "Xperia acro HD (IS12S) driver for ICS" SEC05
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia acro HD (IS12S) driver for ICS"
-  File /r "Drivers\ADB\Xperia acro HD (IS12S) driver for ICS\*"
-SectionEnd
-
-Section /o "Xperia acro HD (SO-03D) driver for ICS" SEC06
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia acro HD (SO-03D) driver for ICS"
-  File /r "Drivers\ADB\Xperia acro HD (SO-03D) driver for ICS\*"
-SectionEnd
-
-Section /o "Xperia acro S driver for ICS" SEC07
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia acro S driver for ICS"
-  File /r "Drivers\ADB\Xperia acro S driver for ICS\*"
-SectionEnd
-
-Section /o "Xperia GX (SO-04D) driver for ICS" SEC08
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia GX (SO-04D) driver for ICS"
-  File /r "Drivers\ADB\Xperia GX (SO-04D) driver for ICS\*"
-SectionEnd
-
-Section /o "Xperia NX driver for ICS" SEC09
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia NX driver for ICS"
-  File /r "Drivers\ADB\Xperia NX driver for ICS\*"
-SectionEnd
-
-Section /o "Xperia P, Xperia U, and Xperia sola drivers" SEC10
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia P, Xperia U, and Xperia sola drivers"
-  File /r "Drivers\ADB\Xperia P, Xperia U, and Xperia sola drivers\*"
-SectionEnd
-
-Section /o "Xperia pro, Xperia ray, Xperia ray SO-03C drivers" SEC11
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia pro, Xperia ray, Xperia ray SO-03C drivers"
-  File /r "Drivers\ADB\Xperia pro, Xperia ray, Xperia ray SO-03C drivers\*"
-SectionEnd
-
-Section /o "Xperia S driver for ICS" SEC12
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia S driver for ICS"
-  File /r "Drivers\ADB\Xperia S driver for ICS\*"
-SectionEnd
-
-Section /o "Xperia S, Xperia NX and Xperia acro HD drivers" SEC13
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia S, Xperia NX and Xperia acro HD drivers"
-  File /r "Drivers\ADB\Xperia S, Xperia NX and Xperia acro HD drivers\*"
-SectionEnd
-
-Section /o "Xperia S, Xperia NX, and Xperia acro HD drivers for GB" SEC14
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia S, Xperia NX, and Xperia acro HD drivers for GB"
-  File /r "Drivers\ADB\Xperia S, Xperia NX, and Xperia acro HD drivers for GB\*"
-SectionEnd
-
-Section /o "Xperia SX driver for ICS" SEC15
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia SX driver for ICS"
-  File /r "Drivers\ADB\Xperia SX driver for ICS\*"
-SectionEnd
-
-Section /o "Xperia SL driver" SEC16
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia SL driver"
-  File /r "Drivers\ADB\Xperia SL driver\*"
-SectionEnd
-
-Section /o "Xperia TX driver" SEC17
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia TX driver"
-  File /r "Drivers\ADB\Xperia TX driver\*"
-SectionEnd
-
-Section /o "Xperia VL driver" SEC18
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia VL Drivers"
-  File /r "Drivers\ADB\Xperia VL Drivers\*"
-SectionEnd
-
-Section /o "Xperia Z and SO-02E drivers" SEC19
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z and SO-02E drivers"
-  File /r "Drivers\ADB\Xperia Z and SO-02E drivers\*"
-SectionEnd
-
-Section /o "Xperia Tablet Z drivers SGP311, SGP312, UsbD" SEC20
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia_Tablet_Z-drivers-SGP311_SGP312_UsbD"
-  File /r "Drivers\ADB\Xperia_Tablet_Z-drivers-SGP311_SGP312_UsbD\*"
-SectionEnd
-
-Section /o "Xperia Z Ultra drivers" SEC21
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia_Z_Ultra_driver"
-  File /r "Drivers\ADB\Xperia_Z_Ultra_driver\*"
-SectionEnd
-
-Section /o "Xperia Z Ultra XL39h driver" SEC22
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z Ultra XL39h driver"
-  File /r "Drivers\ADB\Xperia Z Ultra XL39h driver\*"
-SectionEnd
-
-Section /o "Xperia Z1 driver" SEC23
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z1 driver"
-  File /r "Drivers\ADB\Xperia Z1 driver\*"
-SectionEnd
-  
-Section /o "Xperia Z1 L39h driver" SEC24
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z1 L39h driver"
-  File /r "Drivers\ADB\Xperia Z1 L39h driver\*"
-SectionEnd
-  
-Section /o "Sony Z Ultra Google Play Edition driver" SEC25
-  SetOutPath "$TEMP\Flashtool\ADB\Sony Z Ultra Google Play Edition driver"
-  File /r "Drivers\ADB\Sony Z Ultra Google Play Edition driver\*"
-SectionEnd
-
-Section /o "Xperia Z1 f SO-02F driver" SEC26
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia_Z1_f_SO-02F_driver"
-  File /r "Drivers\ADB\Xperia_Z1_f_SO-02F_driver\*"
-SectionEnd
-
-Section /o "Xperia UL Drivers" SEC27
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia UL Drivers"
-  File /r "Drivers\ADB\Xperia UL Drivers\*"
-SectionEnd
-
-Section /o "Xperia A driver" SEC28
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia A driver"
-  File /r "Drivers\ADB\Xperia A driver\*"
-SectionEnd
-
-Section /o "Xperia Z1 Compact driver" SEC29
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z1 Compact driver"
-  File /r "Drivers\ADB\Xperia Z1 Compact driver\*"
-SectionEnd
-
-Section /o "Xperia Z_Ultra_SGP412_driver" SEC30
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z_Ultra_SGP412_driver"
-  File /r "Drivers\ADB\Xperia Z_Ultra_SGP412_driver\*"
-SectionEnd
-
-Section /o "Xperia Z_Ultra_SOL24_driver" SEC31
-  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z_Ultra_SOL24_driver"
-  File /r "Drivers\ADB\Xperia Z_Ultra_SOL24_driver\*"
-SectionEnd
-
-Section /o "Flashmode Drivers" SEC32
+Section /o "Flashmode Drivers" SEC01
   SetOutPath "$TEMP\Flashtool\GordonGate"
   File /r "Drivers\GordonGate\*"
 SectionEnd
 
-Section /o "Fastboot Drivers" SEC33
+Section /o "Fastboot Drivers" SEC02
   SetOutPath "$TEMP\Flashtool\Fastboot"
   File /r "Drivers\FASTBOOT\*"
 SectionEnd
+
+Section /o "Sony Ericsson X8 Drivers" SEC03
+  SetOutPath "$TEMP\Flashtool\ADB\Sony Ericsson X8 Drivers"
+  File /r "Drivers\ADB\Sony Ericsson X8 Drivers\*"
+SectionEnd
+
+Section /o "Sony Ericsson X10 Drivers" SEC04
+  SetOutPath "$TEMP\Flashtool\ADB\Sony Ericsson X10 Drivers"
+  File /r "Drivers\ADB\Sony Ericsson X10 Drivers\*"
+SectionEnd
+
+Section /o "Sony Ericsson X10 mini Drivers" SEC05
+  SetOutPath "$TEMP\Flashtool\ADB\Sony Ericsson X10 mini Drivers"
+  File /r "Drivers\ADB\Sony Ericsson X10 mini Drivers\*"
+SectionEnd
+
+Section /o "Sony Ericsson Xperia arc, Xperia neo, Xperia PLAY, Xperia acro IS11S, Xperia acro SO-02C drivers" SEC06
+  SetOutPath "$TEMP\Flashtool\ADB\Sony Ericsson Xperia arc, Xperia neo, Xperia PLAY, Xperia acro IS11S, Xperia acro SO-02C drivers"
+  File /r "Drivers\ADB\Sony Ericsson Xperia arc, Xperia neo, Xperia PLAY, Xperia acro IS11S, Xperia acro SO-02C drivers\*"
+SectionEnd
+
+Section /o "Xperia acro HD (IS12S) driver for ICS" SEC07
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia acro HD (IS12S) driver for ICS"
+  File /r "Drivers\ADB\Xperia acro HD (IS12S) driver for ICS\*"
+SectionEnd
+
+Section /o "Xperia acro HD (SO-03D) driver for ICS" SEC08
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia acro HD (SO-03D) driver for ICS"
+  File /r "Drivers\ADB\Xperia acro HD (SO-03D) driver for ICS\*"
+SectionEnd
+
+Section /o "Xperia acro S driver for ICS" SEC09
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia acro S driver for ICS"
+  File /r "Drivers\ADB\Xperia acro S driver for ICS\*"
+SectionEnd
+
+Section /o "Xperia GX (SO-04D) driver for ICS" SEC10
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia GX (SO-04D) driver for ICS"
+  File /r "Drivers\ADB\Xperia GX (SO-04D) driver for ICS\*"
+SectionEnd
+
+Section /o "Xperia NX driver for ICS" SEC11
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia NX driver for ICS"
+  File /r "Drivers\ADB\Xperia NX driver for ICS\*"
+SectionEnd
+
+Section /o "Xperia P, Xperia U, and Xperia sola drivers" SEC12
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia P, Xperia U, and Xperia sola drivers"
+  File /r "Drivers\ADB\Xperia P, Xperia U, and Xperia sola drivers\*"
+SectionEnd
+
+Section /o "Xperia pro, Xperia ray, Xperia ray SO-03C drivers" SEC13
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia pro, Xperia ray, Xperia ray SO-03C drivers"
+  File /r "Drivers\ADB\Xperia pro, Xperia ray, Xperia ray SO-03C drivers\*"
+SectionEnd
+
+Section /o "Xperia S driver for ICS" SEC14
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia S driver for ICS"
+  File /r "Drivers\ADB\Xperia S driver for ICS\*"
+SectionEnd
+
+Section /o "Xperia S, Xperia NX and Xperia acro HD drivers" SEC15
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia S, Xperia NX and Xperia acro HD drivers"
+  File /r "Drivers\ADB\Xperia S, Xperia NX and Xperia acro HD drivers\*"
+SectionEnd
+
+Section /o "Xperia S, Xperia NX, and Xperia acro HD drivers for GB" SEC16
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia S, Xperia NX, and Xperia acro HD drivers for GB"
+  File /r "Drivers\ADB\Xperia S, Xperia NX, and Xperia acro HD drivers for GB\*"
+SectionEnd
+
+Section /o "Xperia SX driver for ICS" SEC17
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia SX driver for ICS"
+  File /r "Drivers\ADB\Xperia SX driver for ICS\*"
+SectionEnd
+
+Section /o "Xperia SL driver" SEC18
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia SL driver"
+  File /r "Drivers\ADB\Xperia SL driver\*"
+SectionEnd
+
+Section /o "Xperia TX driver" SEC19
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia TX driver"
+  File /r "Drivers\ADB\Xperia TX driver\*"
+SectionEnd
+
+Section /o "Xperia VL driver" SEC20
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia VL Drivers"
+  File /r "Drivers\ADB\Xperia VL Drivers\*"
+SectionEnd
+
+Section /o "Xperia Z and SO-02E drivers" SEC21
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z and SO-02E drivers"
+  File /r "Drivers\ADB\Xperia Z and SO-02E drivers\*"
+SectionEnd
+
+Section /o "Xperia Tablet Z drivers SGP311, SGP312, UsbD" SEC22
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia_Tablet_Z-drivers-SGP311_SGP312_UsbD"
+  File /r "Drivers\ADB\Xperia_Tablet_Z-drivers-SGP311_SGP312_UsbD\*"
+SectionEnd
+
+Section /o "Xperia Z Ultra drivers" SEC23
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia_Z_Ultra_driver"
+  File /r "Drivers\ADB\Xperia_Z_Ultra_driver\*"
+SectionEnd
+
+Section /o "Xperia Z Ultra XL39h driver" SEC24
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z Ultra XL39h driver"
+  File /r "Drivers\ADB\Xperia Z Ultra XL39h driver\*"
+SectionEnd
+
+Section /o "Xperia Z1 driver" SEC25
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z1 driver"
+  File /r "Drivers\ADB\Xperia Z1 driver\*"
+SectionEnd
+  
+Section /o "Xperia Z1 L39h driver" SEC26
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z1 L39h driver"
+  File /r "Drivers\ADB\Xperia Z1 L39h driver\*"
+SectionEnd
+  
+Section /o "Sony Z Ultra Google Play Edition driver" SEC27
+  SetOutPath "$TEMP\Flashtool\ADB\Sony Z Ultra Google Play Edition driver"
+  File /r "Drivers\ADB\Sony Z Ultra Google Play Edition driver\*"
+SectionEnd
+
+Section /o "Xperia Z1 f SO-02F driver" SEC28
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia_Z1_f_SO-02F_driver"
+  File /r "Drivers\ADB\Xperia_Z1_f_SO-02F_driver\*"
+SectionEnd
+
+Section /o "Xperia UL Drivers" SEC29
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia UL Drivers"
+  File /r "Drivers\ADB\Xperia UL Drivers\*"
+SectionEnd
+
+Section /o "Xperia A driver" SEC30
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia A driver"
+  File /r "Drivers\ADB\Xperia A driver\*"
+SectionEnd
+
+Section /o "Xperia Z1 Compact driver" SEC31
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z1 Compact driver"
+  File /r "Drivers\ADB\Xperia Z1 Compact driver\*"
+SectionEnd
+
+Section /o "Xperia Z_Ultra_SGP412_driver" SEC32
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z_Ultra_SGP412_driver"
+  File /r "Drivers\ADB\Xperia Z_Ultra_SGP412_driver\*"
+SectionEnd
+
+Section /o "Xperia Z_Ultra_SOL24_driver" SEC33
+  SetOutPath "$TEMP\Flashtool\ADB\Xperia Z_Ultra_SOL24_driver"
+  File /r "Drivers\ADB\Xperia Z_Ultra_SOL24_driver\*"
+SectionEnd
+
 
 Section -Post
   SetOutPath "$TEMP\Flashtool"
