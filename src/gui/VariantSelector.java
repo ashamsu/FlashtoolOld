@@ -49,7 +49,6 @@ public class VariantSelector extends Dialog {
 	 * @return the result
 	 */
 	public Object open(HashSet<String> variantlist) {
-		System.out.println(variantlist.size());
 		if (variantlist.size()==0) return null;
 		currentVariant = variantlist;
 		createContents();
