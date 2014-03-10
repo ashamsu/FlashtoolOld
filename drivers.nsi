@@ -6,7 +6,7 @@ RequestExecutionLevel highest
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "FlashTool Xperia Driver Pack"
-!define PRODUCT_VERSION "v1.3.1 (20140301)"
+!define PRODUCT_VERSION "v1.4 (20140310)"
 !define PRODUCT_PUBLISHER "Androxyde & DooMLoRD"
 !define PRODUCT_WEB_SITE "http://www.flashtool.net/"
 
