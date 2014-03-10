@@ -322,7 +322,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC13} "Common ADB drivers for Taoshan board devices based on MSM8230 chipset: Xperia L"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC14} "Common ADB drivers for Rhine board devices based on MSM8974 chipset: Xperia Z Ultra, Z1, Z1 Compact, Z1s"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC15} "Common ADB drivers for Tianchi board devices based on MSM8928 chipset: Xperia T2 Ultra, T2 Ultra Dual"
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC16} "Common ADB drivers for Shinano board devices based on MSM8974AB chipset: Xperia D65xx, other unannounced devices"
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC16} "Common ADB drivers for Shinano board devices based on MSM8974AB chipset: Xperia Z2 (D65xx), Xperia Tablet Z2"
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC17} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC18} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC19} ""
