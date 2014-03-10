@@ -286,6 +286,11 @@ Section /o "Xperia T2 Ultra driver" SEC49
   File /r "Drivers\ADB\Xperia_T2_Ultra_driver\*"
 SectionEnd
 
+Section /o "Common drivers for Shuang board" SEC50
+  SetOutPath "$TEMP\Flashtool\ADB\Common drivers Shuang board"
+  File /r "Drivers\ADB\Common drivers Shuang board\*"
+SectionEnd
+
 
 Section -Post
   SetOutPath "$TEMP\Flashtool"
@@ -351,6 +356,7 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC47} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC48} ""
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC49} ""
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC50} "Common ADB drivers for Shuang board devices based on MSM8210 chipset: Xperia E1 (D20xx & D21xx) devices"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 Function .onInit
