@@ -168,7 +168,7 @@ public class X10flash {
     public void BackupTA() throws IOException, X10FlashException {
     	int partition = 2;
     	openTA(partition);
-    	String folder = OS.getWorkDir()+File.separator+"custom"+File.separator+getPhoneProperty("MSN")+File.separator+"s1ta"+File.separator+OS.getTimeStamp();
+    	String folder = OS.getWorkDir()+File.separator+"custom"+File.separator+"mydevices"+File.separator+getPhoneProperty("MSN")+File.separator+"s1ta"+File.separator+OS.getTimeStamp();
     	new File(folder).mkdirs();
     	TextFile tazone = new TextFile(folder+File.separator+partition+".ta","ISO8859-1");
     	MyLogger.getLogger().info("TA partition "+partition+" saved to "+folder+File.separator+partition+".ta");
