@@ -29,6 +29,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.system.DeviceEntry;
 import org.system.PropertiesFile;
 import org.system.TextFile;
+import org.system.UpdateURL;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Label;
@@ -130,12 +131,14 @@ public class DeviceUpdates extends Dialog {
 		);
 
 		final PropertiesFile custlist = new PropertiesFile();
-		String urlbase = "";
+		UpdateURL urlbase = null;
 		String folder = tabtitle.length()>0?tabtitle+File.separator:"";
 		try {
 			TextFile url = new TextFile(_entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"updateurl","UTF-8");
 			url.readLines();
-			urlbase = url.getLines().iterator().next();
+			urlbase = new UpdateURL(url.getLines().iterator().next());
+			urlbase.setParameter("swVer", "0.0.0.0");
+			urlbase.setParameter("cdfVer", "0.0.0.0");
 		} catch (Exception e) {}
 		custlist.open("", _entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"custlist.properties");
 		Iterator clist = custlist.keySet().iterator();
@@ -144,7 +147,9 @@ public class DeviceUpdates extends Dialog {
 			String line="";
 			final String custid=(String)clist.next();
 			try {
-				u = new URL(urlbase+custid);
+				urlbase.setParameter("cdfId", custid);
+				System.out.println(urlbase.getFullURL());
+				u = new URL(urlbase.getFullURL());
 				Scanner sc = new Scanner(u.openStream());
 				while (sc.hasNextLine()) {
 					line = line+sc.nextLine();
