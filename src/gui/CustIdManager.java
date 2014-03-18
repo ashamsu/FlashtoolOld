@@ -35,8 +35,9 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import gui.models.TableLine;
 
-public class DeviceUpdates extends Dialog {
+public class CustIdManager extends Dialog {
 
 	protected Object result;
 	protected Shell shlDeviceUpdateChecker;
@@ -52,7 +53,7 @@ public class DeviceUpdates extends Dialog {
 	 * @param parent
 	 * @param style
 	 */
-	public DeviceUpdates(Shell parent, int style) {
+	public CustIdManager(Shell parent, int style) {
 		super(parent, style);
 		setText("SWT Dialog");
 	}

@@ -1,5 +1,7 @@
 package org.system;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Properties;
 
@@ -37,5 +39,24 @@ public class UpdateURL {
 			fullurl = fullurl+key + "=" + parameters.getProperty(key)+"&";
 		}
 		return fullurl.substring(0, fullurl.length()-1);
+	}
+	
+	public String getDeviceID() {
+		String uid = this.getParameter("model");
+		String id = Devices.getIdFromVariant(uid);
+		if (id.equals(uid)) return "";
+		return id;
+	}
+
+	public String getVariant() {
+		String uid = this.getParameter("model");
+		return uid;
+	}
+	
+	public void dumpTo(String path) throws IOException {
+		TextFile t = new TextFile(path+File.separator+"updateurl","ISO8859-15");
+		t.open(false);
+		t.write(this.getFullURL());
+		t.close();
 	}
 }
