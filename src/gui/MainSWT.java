@@ -312,6 +312,15 @@ public class MainSWT {
 		});
 		mntmInstallBusybox.setText("Install busybox");
 		
+		MenuItem mntmLaunchServicemenu = new MenuItem(menu_8, SWT.NONE);
+		mntmLaunchServicemenu.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				//put code here
+			}
+		});
+		mntmLaunchServicemenu.setText("Launch ServiceMenu");
+		
 		MenuItem mntmReboot = new MenuItem(menu_8, SWT.NONE);
 		mntmReboot.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -481,6 +490,27 @@ public class MainSWT {
 		
 		Menu menu_11 = new Menu(mntmUpdates);
 		mntmUpdates.setMenu(menu_11);
+		
+		MenuItem mntmCdfidManager = new MenuItem(menu_11, SWT.NONE);
+		mntmCdfidManager.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Properties p = new Properties();
+				Enumeration<Object> list = Devices.listDevices(false);
+				while (list.hasMoreElements()) {
+					DeviceEntry entry = Devices.getDevice((String)list.nextElement());
+					if (entry.canShowUpdates())
+						p.setProperty(entry.getId(), entry.getName());
+				}
+				String result = WidgetTask.openDeviceSelector(shlSonyericsson, p);
+				if (result.length()>0) {
+					DeviceEntry entry = new DeviceEntry(result);
+					CustIdManager mng = new CustIdManager(shlSonyericsson,SWT.PRIMARY_MODAL | SWT.SHEET);
+					mng.open(entry);
+				}
+			}
+		});
+		mntmCdfidManager.setText("cdfID Manager");
 		
 		MenuItem mntmCheck = new MenuItem(menu_11, SWT.NONE);
 		mntmCheck.addSelectionListener(new SelectionAdapter() {
