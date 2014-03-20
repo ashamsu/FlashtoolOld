@@ -316,7 +316,11 @@ public class MainSWT {
 		mntmLaunchServicemenu.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				//put code here
+				try {
+					AdbUtility.run("am start -a android.intent.action.MAIN -n com.sonyericsson.android.servicemenu/.ServiceMainMenu");
+				}
+				catch (Exception ex) {
+				}
 			}
 		});
 		mntmLaunchServicemenu.setText("Launch ServiceMenu");
