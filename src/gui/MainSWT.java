@@ -317,6 +317,7 @@ public class MainSWT {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
+					MyLogger.getLogger().info("Launching Service Menu!");
 					AdbUtility.run("am start -a android.intent.action.MAIN -n com.sonyericsson.android.servicemenu/.ServiceMainMenu");
 				}
 				catch (Exception ex) {
