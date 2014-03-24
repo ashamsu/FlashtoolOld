@@ -5,19 +5,20 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class LocalDbAccess {
+public class LocalDbAcess {
 	  static final String DB_DRIVER = "org.hsqldb.jdbc.JDBCDriver";
 	  public static final int INT_DB_ID_NULL = -1;
 	  private static final String INSERT_LOCK_OBJECT = "INSERT_LOCK_OBJECT";
 	  private boolean aUpdated = false;
 	  private Connection aConnection = null;
 	  
-	  private static LocalDbAccess aInstance = new LocalDbAccess();
+	  private static LocalDbAcess aInstance = new LocalDbAcess();
 	  
-	  public static LocalDbAccess getInstance()
+	  public static LocalDbAcess getInstance()
 	  {
 	    return aInstance;
-	  }	
+	  }
+	  
 	  private String getCryptKey()
 	  {
 	    return "f14cc324bb74d4ce44e768a56612e9a8";
