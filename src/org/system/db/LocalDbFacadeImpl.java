@@ -43,7 +43,6 @@ public class LocalDbFacadeImpl
 {
   private static final String HSQL_DB_ALREADY_IN_USE = "database is already in use by another process";
   private static final String HSQL_DB_LOCK_FAILED = "Database lock acquisition failure";
-  private TessLocalDbConfig aLocalDbConfig;
   private static final LocalDbAcess aDbAccess = LocalDbAcess.getInstance();
   private static LocalDbFacadeImpl aLocalDbFacade;
   
@@ -63,36 +62,16 @@ public class LocalDbFacadeImpl
   
   private void removeDbIfTooOld(String FileName)
   {
-    File localFile1 = new File(FileName);
-    if (localFile1.exists())
-    {
-      int i = this.aLocalDbConfig.getVersion();
-      if ((i == -1) || (i < 5))
-      {
-        File[] arrayOfFile1 = localFile1.listFiles();
-        for (File localFile2 : arrayOfFile1) {
-          if (localFile2.delete()) {
-        	  //
-          } else {
-        	  //
-          }
-        }
-      }
-    }
-    boolean bool = localFile1.mkdirs();
+// nah!
   }
   
-  public void startLocalDb(TessLocalDbConfig paramTessLocalDbConfig)
+  public void startLocalDb(String FileName)
     throws Exception
   {
-    this.aLocalDbConfig = paramTessLocalDbConfig;
-    String str1 = this.aLocalDbConfig.getDbPathForCurrentUser();
-    removeDbIfTooOld(str1);
-    String FileName = str1 + this.aLocalDbConfig.getLocalDbName();
     try
     {
       aDbAccess.connect(FileName);
-      LocalDbCreator localLocalDbCreator = new LocalDbCreator(this.aLocalDbConfig);
+      LocalDbCreator localLocalDbCreator = new LocalDbCreator();
       localLocalDbCreator.checkLocalDatabase();
     }
     catch (SQLException localSQLException)
@@ -130,7 +109,7 @@ public class LocalDbFacadeImpl
   
   public TessLocalDbConfig getLocalDbConfigurator()
   {
-    return this.aLocalDbConfig;
+    return null;
   }
   
   public synchronized long insertService(ServiceVO paramServiceVO)

@@ -11,11 +11,9 @@ public class LocalDbCreator
 {
   public static final int LOCAL_DATABASE_VERSION_COUNTER = 6;
   private static final LocalDbAcess aDbAccess = LocalDbAcess.getInstance();
-  private final TessLocalDbConfig aDbConfig;
   
-  public LocalDbCreator(TessLocalDbConfig paramTessLocalDbConfig)
+  public LocalDbCreator()
   {
-    this.aDbConfig = paramTessLocalDbConfig;
   }
   
   public void checkLocalDatabase()
@@ -29,7 +27,6 @@ public class LocalDbCreator
       // No Tables present in database!
       dropTables(localConnection);
       createTables(localConnection);
-      this.aDbConfig.setVersion(6);
     }
     localResultSet.close();
   }
@@ -41,7 +38,6 @@ public class LocalDbCreator
     Connection localConnection = aDbAccess.getConnection(false);
     dropTables(localConnection);
     createTables(localConnection);
-    this.aDbConfig.setVersion(6);
     aDbAccess.updated();
   }
   
@@ -85,19 +81,6 @@ public class LocalDbCreator
     String str = "No action set";
     try
     {
-      while (this.aDbConfig.getVersion() != 6)
-      {
-        int i = this.aDbConfig.getVersion();
-        switch (i)
-        {
-        case 5: 
-          updateFromVersion5to6(localConnection);
-          break;
-        default: 
-          // Unknown or too old version, cannot upgrade!
-          return false;
-        }
-      }
       aDbAccess.updated();
       return true;
     }
@@ -113,7 +96,6 @@ public class LocalDbCreator
   {
     String str = "ALTER TABLE tblService ADD COLUMN ser_synchtime BIGINT";
     executeStatements(paramConnection, new String[] { str });
-    this.aDbConfig.setVersion(6);
   }
   
   protected void executeStatements(Connection paramConnection, String... paramVarArgs)
