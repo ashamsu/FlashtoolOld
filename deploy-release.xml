@@ -6,7 +6,7 @@
 	
 	<target name="all" depends="core release"/>
 
-	
+
 	<target name="clean">
     	<mkdir dir="../Deploy"/>
     	<delete dir="../Deploy/FlashTool"/>
