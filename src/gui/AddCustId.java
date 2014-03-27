@@ -1,7 +1,10 @@
 package gui;
 
+import java.util.HashMap;
 import java.util.Iterator;
 
+import gui.models.CustIdItem;
+import gui.models.TableLine;
 import gui.tools.WidgetTask;
 import gui.tools.WidgetsTool;
 
@@ -21,11 +24,14 @@ import org.eclipse.swt.widgets.Combo;
 
 public class AddCustId extends Dialog {
 
-	protected Object result;
+	protected CustIdItem result;
+	protected String model = null;
+	protected TableLine line = null;
 	protected Shell shlAddCdfID;
 	private Text textID;
 	private Combo comboModel;
 	private DeviceEntry _entry;
+	private HashMap _models;
 	private Text textName;
 
 	/**
@@ -42,8 +48,25 @@ public class AddCustId extends Dialog {
 	 * Open the dialog.
 	 * @return the result
 	 */
-	public Object open(DeviceEntry entry) {
+	public Object open(DeviceEntry entry, HashMap models) {
 		_entry = entry;
+		_models = models;
+		return commonOpen();
+	}
+
+	public Object open(String pmodel,TableLine pline) {		
+		this.model = pmodel;
+		if (pline==null) {
+			line = new TableLine();
+			line.add("");
+			line.add("");
+		}
+		else
+			this.line = pline;
+		return commonOpen();
+	}
+
+	public Object commonOpen() {
 		createContents();
 		WidgetsTool.setSize(shlAddCdfID);
 		
@@ -56,9 +79,19 @@ public class AddCustId extends Dialog {
 		
 		comboModel = new Combo(shlAddCdfID, SWT.NONE);
 		comboModel.setBounds(60, 15, 144, 23);
-		Iterator imodel =_entry.getVariantList().iterator();
-		while (imodel.hasNext()) {
-			comboModel.add((String)imodel.next());
+
+		if (model != null) {
+			comboModel.add(model);
+			comboModel.select(0);
+			comboModel.setEnabled(false);
+		}
+		else {
+			Iterator imodel =_entry.getVariantList().iterator();
+			while (imodel.hasNext()) {
+				String model = (String)imodel.next();
+				if (!_models.containsKey(model))
+					comboModel.add(model);
+			}
 		}
 		
 		Label lblModel = new Label(shlAddCdfID, SWT.NONE);
@@ -71,6 +104,12 @@ public class AddCustId extends Dialog {
 		
 		textName = new Text(shlAddCdfID, SWT.BORDER);
 		textName.setBounds(10, 113, 194, 21);
+	
+		if (line != null) {
+			textID.setText(line.getValueOf(0));
+			textName.setText(line.getValueOf(1));
+		}
+		
 		shlAddCdfID.open();
 		shlAddCdfID.layout();
 		Display display = getParent().getDisplay();
@@ -79,8 +118,9 @@ public class AddCustId extends Dialog {
 				display.sleep();
 			}
 		}
-		return result;
+		return result;		
 	}
+	
 
 	/**
 	 * Create contents of the dialog.
@@ -89,7 +129,7 @@ public class AddCustId extends Dialog {
 		shlAddCdfID = new Shell(getParent(), getStyle());
 		shlAddCdfID.addListener(SWT.Close, new Listener() {
 		      public void handleEvent(Event event) {
-		    	  result = "";
+		    	  result = null;
 		    	  event.doit = true;
 		      }
 		    });
@@ -100,7 +140,7 @@ public class AddCustId extends Dialog {
 		btnCancel.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				result = "";
+				result = null;
 				shlAddCdfID.dispose();
 			}
 		});
@@ -114,7 +154,11 @@ public class AddCustId extends Dialog {
 				if (comboModel.getText().length()==0 || textID.getText().length()==0 || textName.getText().length()==0)
 					WidgetTask.openOKBox(shlAddCdfID, "All fields must be set");
 				else {
-					result = comboModel.getText();
+					TableLine l = new TableLine();
+					l.add(textID.getText());
+					l.add(textName.getText());
+
+					result = new CustIdItem(comboModel.getText(),l);
 					shlAddCdfID.dispose();
 				}
 			}

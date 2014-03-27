@@ -1,5 +1,7 @@
 package gui;
 
+import gui.models.CustIdItem;
+import gui.models.PropertiesFileContentProvider;
 import gui.models.TableLine;
 import gui.models.TableSorter;
 import gui.models.VectorContentProvider;
@@ -9,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Vector;
@@ -17,13 +20,27 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuCreator;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.system.DeviceEntry;
@@ -35,6 +52,7 @@ import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+
 import gui.models.TableLine;
 
 public class CustIdManager extends Dialog {
@@ -44,9 +62,7 @@ public class CustIdManager extends Dialog {
 	protected CTabFolder tabFolder;
 	protected DeviceEntry _entry;
 	protected Label lblInfo;
-	protected CTabItem tabItem;
-	private Table tableDevice;
-	private TableViewer tableViewer;
+	protected HashMap models = new HashMap();
 
 	/**
 	 * Create the dialog.
@@ -106,26 +122,123 @@ public class CustIdManager extends Dialog {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				AddCustId add = new AddCustId(shlDeviceUpdateChecker,SWT.PRIMARY_MODAL | SWT.SHEET);
-				add.open(_entry);
+				CustIdItem item = (CustIdItem)add.open(_entry,models);
+				if (item!=null) {
+					new File(_entry.getDeviceDir()+File.separator+"updates"+File.separator+item.getModel()).mkdir();
+					PropertiesFile pf = new PropertiesFile();
+					pf.setProperty(item.getDef().getValueOf(0), item.getDef().getValueOf(1));
+					pf.setFileName(_entry.getDeviceDir()+File.separator+"updates"+File.separator+item.getModel()+File.separator+"custlist.properties");
+					models.put(item.getModel(), pf);
+					addTab(item.getModel(), pf);
+				}
 			}
 		});
 		btnAdd.setBounds(10, 10, 75, 25);
-		btnAdd.setText("Add");
-		fillTab();
+		btnAdd.setText("Add Model");
+		
+		Button btnNewButton_1 = new Button(shlDeviceUpdateChecker, SWT.NONE);
+		btnNewButton_1.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Iterator i = models.keySet().iterator();
+				while (i.hasNext()) {
+					PropertiesFile pf = (PropertiesFile)models.get(i.next());
+					pf.write("ISO8859-1");
+				}
+			}
+		});
+		btnNewButton_1.setBounds(279, 272, 75, 25);
+		btnNewButton_1.setText("Apply");
+		fillMap();
+		parseMap();
+	}
+
+	public void fillMap() {
+		File f = new File(_entry.getDeviceDir()+File.separator+"updates");
+		File[] children = f.listFiles();
+		int nbfolder = 0;
+		for (int i=0;i<children.length;i++) {
+			if (children[i].isDirectory()) {
+				nbfolder++;
+			}
+		}
+		if (nbfolder>0) {
+			for (int i=0;i<children.length;i++) {
+				if (children[i].isDirectory()) {
+					addMap(children[i].getName());
+				}
+			}
+		}
+	}
+
+	public void addMap(final String tabtitle) {
+		PropertiesFile custlist = new PropertiesFile();
+		String folder = tabtitle.length()>0?tabtitle+File.separator:"";
+		custlist.open("", _entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"custlist.properties");
+		models.put(tabtitle, custlist);
+	}
+
+	public void parseMap() {
+		Iterator keys = models.keySet().iterator();
+		while (keys.hasNext()) {
+			String key = (String)keys.next();
+			PropertiesFile pf = (PropertiesFile)models.get(key);
+			addTab(key, pf);
+		}
 	}
 	
-	public void addTab(final String tabtitle) {
-		final Vector<TableLine> result = new Vector<TableLine>();
+	public void addTab(final String tabtitle, final PropertiesFile pf) {
+		final TableViewer tableViewer = new TableViewer(tabFolder,SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER | SWT.SINGLE);
+		final CTabItem tabItem = new CTabItem(tabFolder, SWT.NONE);
 		Display.getDefault().asyncExec(
 				new Runnable() {
 					public void run() {
-						tabItem = new CTabItem(tabFolder, SWT.NONE);
 						tabItem.setText(tabtitle.length()>0?tabtitle:_entry.getId());
-						tableViewer = new TableViewer(tabFolder,SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER | SWT.SINGLE);
-						tableViewer.setContentProvider(new VectorContentProvider());
+						
+						tableViewer.setContentProvider(new PropertiesFileContentProvider());
 						tableViewer.setLabelProvider(new VectorLabelProvider());
+						// Create the popup menu
+						  MenuManager menuMgr = new MenuManager();
+						  Menu menu = menuMgr.createContextMenu(tableViewer.getControl());
+						  menuMgr.addMenuListener(new IMenuListener() {
+						    @Override
+						    public void menuAboutToShow(IMenuManager manager) {
+						    	manager.add(new Action("Add") {
+						            public void run() {
+										AddCustId add = new AddCustId(shlDeviceUpdateChecker,SWT.PRIMARY_MODAL | SWT.SHEET);
+										CustIdItem item = (CustIdItem)add.open(tabtitle,null);
+										if (item != null) {
+											pf.setProperty(item.getDef().getValueOf(0), item.getDef().getValueOf(1));
+							            	tableViewer.refresh();
+										}
+						            }
+						        });						    		
+						    	if (!tableViewer.getSelection().isEmpty()) {
+							    	manager.add(new Action("Edit") {
+							            public void run() {
+											AddCustId add = new AddCustId(shlDeviceUpdateChecker,SWT.PRIMARY_MODAL | SWT.SHEET);
+											TableLine line = (TableLine)tableViewer.getTable().getSelection()[0].getData();
+											pf.remove(line.getValueOf(0));
+											CustIdItem item = (CustIdItem)add.open(tabtitle,line);
+											if (item != null) {
+												pf.setProperty(item.getDef().getValueOf(0), item.getDef().getValueOf(1));
+								            	tableViewer.refresh();
+											}
+							            }
+							        });
+							    	manager.add(new Action("Delete") {
+							            public void run() {
+							            	pf.remove(((TableLine)tableViewer.getTable().getSelection()[0].getData()).getValueOf(0));
+							            	tableViewer.refresh();
+							            }
+							        });
+						    	}
+						    }
+						  });
 
-						tableDevice = tableViewer.getTable();
+						  menuMgr.setRemoveAllWhenShown(true);
+						  tableViewer.getControl().setMenu(menu);
+						Table tableDevice = tableViewer.getTable();
 						TableColumn[] columns = new TableColumn[2];
 						columns[0] = new TableColumn(tableDevice, SWT.NONE);
 						columns[0].setText("Id");
@@ -136,111 +249,23 @@ public class CustIdManager extends Dialog {
 						TableSorter sort = new TableSorter(tableViewer);
 						tableDevice.setSortColumn(tableDevice.getColumn(0));
 						tableDevice.setSortDirection(SWT.UP);
-						tableViewer.setInput(result);
+						tableViewer.setInput(pf);
 					}
 				}
 		);
 
-		final PropertiesFile custlist = new PropertiesFile();
-		String folder = tabtitle.length()>0?tabtitle+File.separator:"";
-		custlist.open("", _entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"custlist.properties");
-		Iterator clist = custlist.keySet().iterator();
-		while (clist.hasNext()) {
-			final String custid=(String)clist.next();
-				// TODO Auto-generated catch block
-			try {
-				TableLine line1 = new TableLine();
-				line1.add(custid);
-				line1.add(custlist.getProperty(custid));
-				result.add(line1);
-				Display.getDefault().asyncExec(
-						new Runnable() {
-							public void run() {
-								tableViewer.refresh();
-							}
-						}
-				);				
-			}
-			catch (Exception e1) {
-			}
-		}		
 		Display.getDefault().asyncExec(
 				new Runnable() {
 					public void run() {
-						tableViewer.setInput(result);
-						for (int i = 0, n = tableDevice.getColumnCount(); i < n; i++) {
-							  tableDevice.getColumn(i).pack();
+						tableViewer.setInput(pf);
+						for (int i = 0, n = tableViewer.getTable().getColumnCount(); i < n; i++) {
+							tableViewer.getTable().getColumn(i).pack();
 						}
-						tableDevice.pack();
+						tableViewer.getTable().pack();
 						tableViewer.refresh();
-						tabItem.setControl(tableDevice);
+						tabItem.setControl(tableViewer.getTable());
 					}
 				}
 		);
-	}
-	
-	public void fillTab() {
-		File f = new File(_entry.getDeviceDir()+File.separator+"updates");
-		File[] children = f.listFiles();
-		int nbfolder = 0;
-		for (int i=0;i<children.length;i++) {
-			if (children[i].isDirectory()) {
-				nbfolder++;
-			}
-		}
-		if (nbfolder>0) {
-
-			for (int i=0;i<children.length;i++) {
-				if (children[i].isDirectory()) {
-					addTab(children[i].getName());
-				}
-			}
-		}
-		else {
-			addTab("");
-		}
-		Display.getDefault().asyncExec(
-				new Runnable() {
-					public void run() {
-						tabFolder.redraw();
-						tabFolder.setSelection(0);
-					}
-				}
-		);
-	}
-
-	class FillJob extends Job {
-
-		boolean canceled = false;
-
-		public FillJob(String name) {
-			super(name);
-		}
-		
-		public void stopSearch() {
-			canceled=true;
-		}
-		
-	    protected IStatus run(IProgressMonitor monitor) {
-			    while (!canceled) {
-					Display.getDefault().asyncExec(
-							new Runnable() {
-								public void run() {
-									lblInfo.setText("Searching for updates. Please wait");
-								}
-							}
-					);
-					fillTab();
-					Display.getDefault().asyncExec(
-							new Runnable() {
-								public void run() {
-									lblInfo.setText("");
-								}
-							}
-					);
-					return Status.OK_STATUS;
-			    }
-			    return Status.CANCEL_STATUS;
-	    }
 	}
 }

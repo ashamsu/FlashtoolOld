@@ -1,5 +1,7 @@
 package org.system;
 
+import gui.models.TableLine;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -7,8 +9,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Set;
+import java.util.Vector;
 
 public class PropertiesFile {
 
@@ -71,6 +75,10 @@ public class PropertiesFile {
 		catch (Exception e) {
 		}		
 	}
+
+	public void setFileName(String filename) {
+		fname = filename;
+	}
 	
 	public void write(String encoding) {
 		write(fname,encoding);
@@ -87,4 +95,19 @@ public class PropertiesFile {
 	public void remove(String key) {
 		props.remove(key);
 	}
+	
+	public Object[] toArray() {
+		Vector<TableLine> v = new Vector<TableLine>();
+		Enumeration e = props.keys();
+		while (e.hasMoreElements()) {
+			String key = (String)e.nextElement();
+			TableLine l = new TableLine();
+			l.add(key);
+			l.add(props.getProperty(key));
+			v.add(l);
+		}
+		return v.toArray();
+	}
+	
+	
 }

@@ -3,6 +3,7 @@ package gui.models;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
+import org.system.PropertiesFile;
 
 public class VectorLabelProvider implements ITableLabelProvider {
 
@@ -23,8 +24,11 @@ public class VectorLabelProvider implements ITableLabelProvider {
 	   * @return String
 	   */
 	  public String getColumnText(Object arg0, int arg1) {
-	    TableLine line = (TableLine) arg0;
-	    return line.getValueOf(arg1);
+		  if (arg0 instanceof TableLine) {
+			  TableLine line = (TableLine) arg0;
+			  return line.getValueOf(arg1);
+		  }
+		  return "";
 	  }
 
 	  /**
