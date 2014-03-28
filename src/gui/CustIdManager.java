@@ -61,8 +61,10 @@ public class CustIdManager extends Dialog {
 	protected Shell shlDeviceUpdateChecker;
 	protected CTabFolder tabFolder;
 	protected DeviceEntry _entry;
+	protected String _model;
 	protected Label lblInfo;
 	protected HashMap models = new HashMap();
+	protected Button btnApply;
 
 	/**
 	 * Create the dialog.
@@ -78,8 +80,9 @@ public class CustIdManager extends Dialog {
 	 * Open the dialog.
 	 * @return the result
 	 */
-	public Object open(DeviceEntry entry) {
+	public Object open(DeviceEntry entry, String model) {
 		_entry = entry;
+		_model = model;
 		createContents();
 		shlDeviceUpdateChecker.open();
 		shlDeviceUpdateChecker.layout();
@@ -130,30 +133,35 @@ public class CustIdManager extends Dialog {
 					pf.setFileName(_entry.getDeviceDir()+File.separator+"updates"+File.separator+item.getModel()+File.separator+"custlist.properties");
 					models.put(item.getModel(), pf);
 					addTab(item.getModel(), pf);
+					btnApply.setEnabled(true);
 				}
 			}
 		});
 		btnAdd.setBounds(10, 10, 75, 25);
 		btnAdd.setText("Add Model");
+		if (_model.length()>0) btnAdd.setEnabled(false);
 		
-		Button btnNewButton_1 = new Button(shlDeviceUpdateChecker, SWT.NONE);
-		btnNewButton_1.addSelectionListener(new SelectionAdapter() {
+		btnApply = new Button(shlDeviceUpdateChecker, SWT.NONE);
+		btnApply.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Iterator i = models.keySet().iterator();
 				while (i.hasNext()) {
 					PropertiesFile pf = (PropertiesFile)models.get(i.next());
 					pf.write("ISO8859-1");
+					btnApply.setEnabled(false);
 				}
 			}
 		});
-		btnNewButton_1.setBounds(279, 272, 75, 25);
-		btnNewButton_1.setText("Apply");
-		fillMap();
+		btnApply.setBounds(279, 272, 75, 25);
+		btnApply.setText("Apply");
+		btnApply.setEnabled(false);
+		fillMap(_model);
 		parseMap();
 	}
 
-	public void fillMap() {
+	public void fillMap(String model) {
+		if (model.length()==0) {
 		File f = new File(_entry.getDeviceDir()+File.separator+"updates");
 		File[] children = f.listFiles();
 		int nbfolder = 0;
@@ -169,12 +177,21 @@ public class CustIdManager extends Dialog {
 				}
 			}
 		}
+		}
+		else {
+			addMap(model);
+		}
 	}
 
 	public void addMap(final String tabtitle) {
 		PropertiesFile custlist = new PropertiesFile();
 		String folder = tabtitle.length()>0?tabtitle+File.separator:"";
-		custlist.open("", _entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"custlist.properties");
+		if (new File(_entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"custlist.properties").exists())
+			custlist.open("", _entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"custlist.properties");
+		else {
+			custlist.setFileName(_entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"custlist.properties");
+			btnApply.setEnabled(true);
+		}
 		models.put(tabtitle, custlist);
 	}
 
@@ -209,6 +226,7 @@ public class CustIdManager extends Dialog {
 										CustIdItem item = (CustIdItem)add.open(tabtitle,null);
 										if (item != null) {
 											pf.setProperty(item.getDef().getValueOf(0), item.getDef().getValueOf(1));
+											btnApply.setEnabled(true);
 							            	tableViewer.refresh();
 										}
 						            }
@@ -222,6 +240,7 @@ public class CustIdManager extends Dialog {
 											CustIdItem item = (CustIdItem)add.open(tabtitle,line);
 											if (item != null) {
 												pf.setProperty(item.getDef().getValueOf(0), item.getDef().getValueOf(1));
+												btnApply.setEnabled(true);
 								            	tableViewer.refresh();
 											}
 							            }
@@ -229,6 +248,7 @@ public class CustIdManager extends Dialog {
 							    	manager.add(new Action("Delete") {
 							            public void run() {
 							            	pf.remove(((TableLine)tableViewer.getTable().getSelection()[0].getData()).getValueOf(0));
+							            	btnApply.setEnabled(true);
 							            	tableViewer.refresh();
 							            }
 							        });

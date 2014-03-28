@@ -514,6 +514,35 @@ public class MainSWT {
 		Menu menu_11 = new Menu(mntmUpdates);
 		mntmUpdates.setMenu(menu_11);
 		
+		MenuItem mntmNewItem_2 = new MenuItem(menu_11, SWT.NONE);
+		mntmNewItem_2.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				String url = WidgetTask.openUpdateURLFeeder(shlSonyericsson);
+				if (url.length()>0) {
+					UpdateURL u = new UpdateURL(url);
+					String devId = u.getDeviceID();
+					if (devId.length()>0) {
+						DeviceEntry ent = Devices.getDevice(devId);
+						String path = ent.getDeviceDir()+File.separator+"updates"+File.separator+u.getVariant();
+						try {
+							new File(path).mkdirs();
+							u.dumpTo(path);
+							CustIdManager mng = new CustIdManager(shlSonyericsson,SWT.PRIMARY_MODAL | SWT.SHEET);
+							mng.open(ent,u.getParameter("model"));
+						} catch (Exception ex) {
+							MyLogger.getLogger().error("Failed to write updateurl");
+							ex.printStackTrace();
+						}
+					}
+					else {
+						MyLogger.getLogger().error("Model from updateurl not found in FT device database");
+					}
+				}
+			}
+		});
+		mntmNewItem_2.setText("Add Update URL");
+		
 		MenuItem mntmCdfidManager = new MenuItem(menu_11, SWT.NONE);
 		mntmCdfidManager.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -529,7 +558,7 @@ public class MainSWT {
 				if (result.length()>0) {
 					DeviceEntry entry = new DeviceEntry(result);
 					CustIdManager mng = new CustIdManager(shlSonyericsson,SWT.PRIMARY_MODAL | SWT.SHEET);
-					mng.open(entry);
+					mng.open(entry,"");
 				}
 			}
 		});
@@ -555,33 +584,6 @@ public class MainSWT {
 			}
 		});
 		mntmCheck.setText("Check");
-		
-		MenuItem mntmNewItem_2 = new MenuItem(menu_11, SWT.NONE);
-		mntmNewItem_2.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				String url = WidgetTask.openUpdateURLFeeder(shlSonyericsson);
-				if (url.length()>0) {
-					UpdateURL u = new UpdateURL(url);
-					String devId = u.getDeviceID();
-					if (devId.length()>0) {
-						DeviceEntry ent = Devices.getDevice(devId);
-						String path = ent.getDeviceDir()+File.separator+"updates"+File.separator+u.getVariant();
-						try {
-							new File(path).mkdirs();
-							u.dumpTo(path);
-						} catch (Exception ex) {
-							MyLogger.getLogger().error("Failed to write updateurl");
-							ex.printStackTrace();
-						}
-					}
-					else {
-						MyLogger.getLogger().error("Model from updateurl not found in FT device database");
-					}
-				}
-			}
-		});
-		mntmNewItem_2.setText("Add Update URL");
 		
 		MenuItem mntmCheckDrivers = new MenuItem(menu_6, SWT.NONE);
 		mntmCheckDrivers.addSelectionListener(new SelectionAdapter() {
