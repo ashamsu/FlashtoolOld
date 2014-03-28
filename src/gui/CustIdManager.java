@@ -54,6 +54,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 
 import gui.models.TableLine;
+import gui.tools.WidgetsTool;
 
 public class CustIdManager extends Dialog {
 
@@ -84,6 +85,7 @@ public class CustIdManager extends Dialog {
 		_entry = entry;
 		_model = model;
 		createContents();
+		WidgetsTool.setSize(shlDeviceUpdateChecker);
 		shlDeviceUpdateChecker.open();
 		shlDeviceUpdateChecker.layout();
 		Display display = getParent().getDisplay();
