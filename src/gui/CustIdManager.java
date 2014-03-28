@@ -139,7 +139,7 @@ public class CustIdManager extends Dialog {
 				}
 			}
 		});
-		btnAdd.setBounds(10, 10, 75, 25);
+		btnAdd.setBounds(10, 10, 93, 25);
 		btnAdd.setText("Add Model");
 		if (_model.length()>0) btnAdd.setEnabled(false);
 		
