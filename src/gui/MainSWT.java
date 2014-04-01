@@ -50,6 +50,7 @@ import org.system.DeviceChangedListener;
 import org.system.DeviceEntry;
 import org.system.DeviceProperties;
 import org.system.Devices;
+import org.system.DevicesGit;
 import org.system.FTDEntry;
 import org.system.FTShell;
 import org.system.GlobalConfig;
@@ -111,6 +112,10 @@ public class MainSWT {
 		createContents();
 		WidgetsTool.setSize(shlSonyericsson);
 		guimode=true;
+		shlSonyericsson.open();
+		shlSonyericsson.layout();
+		WaitForDevicesSync sync = new WaitForDevicesSync(shlSonyericsson,SWT.PRIMARY_MODAL | SWT.SHEET);
+		sync.open();
 		StatusListener phoneStatus = new StatusListener() {
 			public void statusChanged(StatusEvent e) {
 				if (!e.isDriverOk()) {
@@ -147,8 +152,6 @@ public class MainSWT {
 		phoneWatchdog = new AdbPhoneThread();
 		phoneWatchdog.start();
 		phoneWatchdog.addStatusListener(phoneStatus);
-		shlSonyericsson.open();
-		shlSonyericsson.layout();
 		while (!shlSonyericsson.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
