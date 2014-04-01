@@ -22,7 +22,7 @@ public class DevicesGit {
     
     public static void gitSync() throws IOException, InvalidRemoteException, org.eclipse.jgit.api.errors.TransportException, GitAPIException {
     	if (!new File(localPath+File.separator+".git").exists()) {
-    		MyLogger.getLogger().info("This is the firt sync with devices on github. Renaming devices to devices.old");
+    		MyLogger.getLogger().info("This is the first sync with devices on github. Renaming devices to devices.old");
 			new File(localPath).renameTo(new File(localPath+".old"));
     	}
     	if (!new File(localPath).exists()) {
