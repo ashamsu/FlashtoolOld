@@ -2,6 +2,7 @@ package org.system;
 
 import gui.models.TableLine;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
@@ -10,6 +11,7 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Enumeration;
+import java.util.Iterator;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
@@ -26,6 +28,14 @@ public class PropertiesFile {
 	
 	public void setProperties(Properties p) {
 		props=p;
+	}
+	
+	public void mergeWith(PropertiesFile pf) {
+		Iterator i = pf.keySet().iterator();
+		while (i.hasNext()) {
+			String key = (String)i.next();
+			props.setProperty(key, pf.getProperty(key));
+		}
 	}
 	
 	public void open(String arname, String afname) {
@@ -67,6 +77,7 @@ public class PropertiesFile {
 	
 	public void write(String filename,String encoding) {
 		try {
+			new File(filename).getParentFile().mkdirs();
 			Writer out = new OutputStreamWriter(new FileOutputStream(filename), encoding);
 			props.store(out, null);
 			out.flush();

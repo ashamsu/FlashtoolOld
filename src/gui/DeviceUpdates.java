@@ -1,18 +1,13 @@
 package gui;
 
+import gui.models.ModelUpdater;
+import gui.models.Models;
 import gui.models.TableLine;
 import gui.models.TableSorter;
 import gui.models.VectorContentProvider;
 import gui.models.VectorLabelProvider;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Iterator;
-import java.util.Scanner;
 import java.util.Vector;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -27,10 +22,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.system.DeviceEntry;
-import org.system.Devices;
-import org.system.PropertiesFile;
-import org.system.TextFile;
-import org.system.UpdateURL;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Label;
@@ -46,6 +37,7 @@ public class DeviceUpdates extends Dialog {
 	protected CTabItem tabItem;
 	private Table tableDevice;
 	private TableViewer tableViewer;
+	protected Models models;
 
 	/**
 	 * Create the dialog.
@@ -100,10 +92,15 @@ public class DeviceUpdates extends Dialog {
 		lblInfo = new Label(shlDeviceUpdateChecker, SWT.NONE);
 		lblInfo.setBounds(11, 244, 342, 15);
 
+		fillMap();
 		FillJob fj = new FillJob("Update Search");
 		fj.schedule();
 	}
-	
+
+	public void fillMap() {
+		models = _entry.getUpdatableModels();
+	}
+
 	public void addTab(final String tabtitle) {
 		final Vector<TableLine> result = new Vector<TableLine>();
 		Display.getDefault().asyncExec(
@@ -130,55 +127,29 @@ public class DeviceUpdates extends Dialog {
 					}
 				}
 		);
-
-		final PropertiesFile custlist = new PropertiesFile();
-		UpdateURL urlbase = null;
-		String folder = tabtitle.length()>0?tabtitle+File.separator:"";
+		
+		ModelUpdater mu = (ModelUpdater)models.get(tabtitle);
 		try {
-			TextFile url = new TextFile(_entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"updateurl","UTF-8");
-			url.readLines();
-			urlbase = new UpdateURL(url.getLines().iterator().next());
-			urlbase.setParameter("cdfVer", "R1A");
-		} catch (Exception e) {}
-		System.out.println(Devices.getVariantName(urlbase.getParameter("model")));
-		custlist.open("", _entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"custlist.properties");
-		Iterator clist = custlist.keySet().iterator();
-		while (clist.hasNext()) {
-			URL u;
-			String line="";
-			final String custid=(String)clist.next();
-			try {
-				urlbase.setParameter("cdfId", custid);
-				System.out.println(urlbase.getFullURL());
-				u = new URL(urlbase.getFullURL());
-				Scanner sc = new Scanner(u.openStream());
-				while (sc.hasNextLine()) {
-					line = line+sc.nextLine();
-				}
-			} catch (MalformedURLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			try {
-				final String latest = line.substring(line.indexOf("<swVersion>")+11, line.indexOf("</swVersion>"));
-				TableLine line1 = new TableLine();
-				line1.add(custlist.getProperty(custid));
-				line1.add(latest);
-				result.add(line1);
-				Display.getDefault().asyncExec(
-						new Runnable() {
-							public void run() {
-								tableViewer.refresh();
-							}
+		mu.checkUpdates();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Iterator vlist = mu.getVersions().keySet().iterator();
+		while (vlist.hasNext()) {
+			String name = (String)vlist.next();
+			TableLine line1 = new TableLine();
+			line1.add(name);
+			line1.add(mu.getVersions().getProperty(name));
+			result.add(line1);
+			Display.getDefault().asyncExec(
+					new Runnable() {
+						public void run() {
+							tableViewer.refresh();
 						}
-				);				
-			}
-			catch (Exception e1) {
-			}
-		}		
+					}
+			);				
+		}
+		
 		Display.getDefault().asyncExec(
 				new Runnable() {
 					public void run() {
@@ -195,24 +166,9 @@ public class DeviceUpdates extends Dialog {
 	}
 	
 	public void fillTab() {
-		File f = new File(_entry.getDeviceDir()+File.separator+"updates");
-		File[] children = f.listFiles();
-		int nbfolder = 0;
-		for (int i=0;i<children.length;i++) {
-			if (children[i].isDirectory()) {
-				nbfolder++;
-			}
-		}
-		if (nbfolder>0) {
-
-			for (int i=0;i<children.length;i++) {
-				if (children[i].isDirectory()) {
-					addTab(children[i].getName());
-				}
-			}
-		}
-		else {
-			addTab("");
+		Iterator imodels = models.keySet().iterator();
+		while (imodels.hasNext()) {
+			addTab((String)imodels.next());
 		}
 		Display.getDefault().asyncExec(
 				new Runnable() {

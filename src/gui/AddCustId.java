@@ -1,13 +1,12 @@
 package gui;
 
-import java.util.HashMap;
 import java.util.Iterator;
-
 import gui.models.CustIdItem;
+import gui.models.ModelUpdater;
+import gui.models.Models;
 import gui.models.TableLine;
 import gui.tools.WidgetTask;
 import gui.tools.WidgetsTool;
-
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -25,14 +24,14 @@ import org.eclipse.swt.widgets.Combo;
 public class AddCustId extends Dialog {
 
 	protected CustIdItem result;
-	protected String model = null;
 	protected TableLine line = null;
 	protected Shell shlAddCdfID;
 	private Text textID;
 	private Combo comboModel;
-	private DeviceEntry _entry;
-	private HashMap _models;
+	private boolean showothermodels = true;
+	private Models _models;
 	private Text textName;
+	private DeviceEntry _entry;
 
 	/**
 	 * Create the dialog.
@@ -48,21 +47,28 @@ public class AddCustId extends Dialog {
 	 * Open the dialog.
 	 * @return the result
 	 */
-	public Object open(DeviceEntry entry, HashMap models) {
-		_entry = entry;
-		_models = models;
+	public Object open(ModelUpdater m) {
+		_models.put(m.getModel(), m);
+		showothermodels=false;
+		_entry = m.getDevice();
 		return commonOpen();
 	}
 
-	public Object open(String pmodel,TableLine pline) {		
-		this.model = pmodel;
-		if (pline==null) {
-			line = new TableLine();
-			line.add("");
-			line.add("");
-		}
-		else
-			this.line = pline;
+	public Object open(ModelUpdater m, CustIdItem i) {
+		result=i;
+		_models.put(m.getModel(), m);
+		_entry = m.getDevice();
+		showothermodels=false;
+		return commonOpen();
+	}
+
+	/**
+	 * Open the dialog.
+	 * @return the result
+	 */
+	public Object open(Models models) {
+		_models = models;
+		 _entry = _models.getDevice();
 		return commonOpen();
 	}
 
@@ -76,12 +82,13 @@ public class AddCustId extends Dialog {
 		
 		textID = new Text(shlAddCdfID, SWT.BORDER);
 		textID.setBounds(10, 65, 194, 21);
+		if (result!=null) textID.setText(result.getDef().getValueOf(0));
 		
 		comboModel = new Combo(shlAddCdfID, SWT.NONE);
 		comboModel.setBounds(60, 15, 144, 23);
 
-		if (model != null) {
-			comboModel.add(model);
+		if (!showothermodels) {
+			comboModel.add(((ModelUpdater)_models.values().iterator().next()).getModel());
 			comboModel.select(0);
 			comboModel.setEnabled(false);
 		}
@@ -104,6 +111,7 @@ public class AddCustId extends Dialog {
 		
 		textName = new Text(shlAddCdfID, SWT.BORDER);
 		textName.setBounds(10, 113, 194, 21);
+		if (result!=null) textName.setText(result.getDef().getValueOf(1));
 	
 		if (line != null) {
 			textID.setText(line.getValueOf(0));
@@ -167,4 +175,5 @@ public class AddCustId extends Dialog {
 		btnOK.setText("Ok");
 
 	}
+
 }

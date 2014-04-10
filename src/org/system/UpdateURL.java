@@ -9,16 +9,27 @@ public class UpdateURL {
 
 	String url = "";
 	Properties parameters = new Properties();
+	String path;
+	String cpath;
 	
-	public UpdateURL(String fullurl) {
+	public UpdateURL(String fullurl) throws Exception {
 		url = fullurl.substring(0,fullurl.indexOf("?"));
 		String params = fullurl.substring(fullurl.indexOf("?")+1,fullurl.length());
 		String[] list = params.split("&");
 		for (int i=0;i<list.length;i++) {
 			parameters.setProperty(list[i].split("=")[0], list[i].split("=")[1]);
 		}
+		String devId = getDeviceID();
+		if (devId.length()==0) throw new Exception("Device not found in database");
+		DeviceEntry ent = Devices.getDevice(devId);
+		path = ent.getDeviceDir()+File.separator+"updates"+File.separator+getVariant();
+		cpath = ent.getCustomDeviceDir()+File.separator+"updates"+File.separator+getVariant();
 	}
 
+	public boolean exists() {
+		return (new File(path).exists() || new File(cpath).exists());
+	}
+	
 	public String getParameters() {
 		return parameters.toString();
 	}
@@ -53,8 +64,8 @@ public class UpdateURL {
 		return uid;
 	}
 	
-	public void dumpTo(String path) throws IOException {
-		TextFile t = new TextFile(path+File.separator+"updateurl","ISO8859-15");
+	public void dumpToFile() throws IOException {
+		TextFile t = new TextFile(cpath+File.separator+"updateurl","ISO8859-15");
 		t.open(false);
 		t.write(this.getFullURL());
 		t.close();

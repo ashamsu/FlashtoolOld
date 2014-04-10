@@ -1,5 +1,8 @@
 package gui.models;
 
+import org.system.DeviceEntry;
+import org.system.Devices;
+
 public class CustIdItem {
 
 	private String model;
@@ -18,4 +21,8 @@ public class CustIdItem {
 		return iddef;
 	}
 
+	public DeviceEntry getDevice() {
+			String id = Devices.getIdFromVariant(model);
+			return Devices.getDevice(id);
+	}
 }

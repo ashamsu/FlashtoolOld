@@ -37,12 +37,19 @@ public class Devices  {
 		return props.keys();
 	}
 	
+	public static String getDevicesDir() {
+		return OS.getWorkDir()+File.separator+"devices";
+	}
+	
+	public static String getCustomDevicesDir() {
+		return OS.getWorkDir()+File.separator+"custom"+File.separator+"mydevices"+File.separator+"config";
+	}
 	public static DeviceEntry getDevice(String device) {
 		try {
 			if (props.containsKey(device))
 				return (DeviceEntry)props.get(device);
 			else {
-				File f = new File(OS.getWorkDir()+File.separator+"devices"+File.separator+device+".ftd");
+				File f = new File(Devices.getDevicesDir()+File.separator+device+".ftd");
 				if (f.exists()) {
 					DeviceEntry ent=null;
 					JarFile jar = new JarFile(f);
@@ -80,14 +87,14 @@ public class Devices  {
 	private static void load() {
 		if (props==null) props=new Properties();
 		else props.clear();
-		File[] list = (new File(OS.getWorkDir()+OS.getFileSeparator()+"devices")).listFiles();
+		File[] list = (new File(Devices.getDevicesDir()).listFiles());
 		if (list==null) return;
 		for (int i=0;i<list.length;i++) {
 			if (list[i].isDirectory()) {
 				PropertiesFile p = new PropertiesFile();
 				String device = list[i].getPath().substring(list[i].getPath().lastIndexOf(OS.getFileSeparator())+1);
 				try {
-					if (!device.toLowerCase().equals("busybox")) {
+					if (!device.toLowerCase().equals("busybox") && !device.toLowerCase().equals(".git")) {
 						p.open("",new File(list[i].getPath()+OS.getFileSeparator()+device+".properties").getAbsolutePath());
 						DeviceEntry entry = new DeviceEntry(p);
 						if (device.equals(entry.getId()))

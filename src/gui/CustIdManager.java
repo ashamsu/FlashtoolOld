@@ -1,59 +1,31 @@
 package gui;
 
 import gui.models.CustIdItem;
+import gui.models.ModelUpdater;
+import gui.models.Models;
 import gui.models.PropertiesFileContentProvider;
 import gui.models.TableLine;
 import gui.models.TableSorter;
-import gui.models.VectorContentProvider;
 import gui.models.VectorLabelProvider;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Scanner;
-import java.util.Vector;
-
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.widgets.Dialog;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.events.HelpListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.system.DeviceEntry;
-import org.system.Devices;
-import org.system.PropertiesFile;
-import org.system.TextFile;
-import org.system.UpdateURL;
 import org.eclipse.swt.custom.CTabFolder;
 import org.eclipse.swt.custom.CTabItem;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-
-import gui.models.TableLine;
 import gui.tools.WidgetsTool;
 
 public class CustIdManager extends Dialog {
@@ -61,11 +33,10 @@ public class CustIdManager extends Dialog {
 	protected Object result;
 	protected Shell shlDeviceUpdateChecker;
 	protected CTabFolder tabFolder;
-	protected DeviceEntry _entry;
-	protected String _model;
 	protected Label lblInfo;
-	protected HashMap models = new HashMap();
+	protected Models models;
 	protected Button btnApply;
+	protected Button btnAdd;
 
 	/**
 	 * Create the dialog.
@@ -81,9 +52,9 @@ public class CustIdManager extends Dialog {
 	 * Open the dialog.
 	 * @return the result
 	 */
-	public Object open(DeviceEntry entry, String model) {
-		_entry = entry;
-		_model = model;
+	
+	public Object open(Models m) {
+		models=m;
 		createContents();
 		WidgetsTool.setSize(shlDeviceUpdateChecker);
 		shlDeviceUpdateChecker.open();
@@ -122,35 +93,37 @@ public class CustIdManager extends Dialog {
 		lblInfo = new Label(shlDeviceUpdateChecker, SWT.NONE);
 		lblInfo.setBounds(11, 244, 342, 15);
 		
-		Button btnAdd = new Button(shlDeviceUpdateChecker, SWT.NONE);
+		btnAdd = new Button(shlDeviceUpdateChecker, SWT.NONE);
 		btnAdd.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				AddCustId add = new AddCustId(shlDeviceUpdateChecker,SWT.PRIMARY_MODAL | SWT.SHEET);
-				CustIdItem item = (CustIdItem)add.open(_entry,models);
+		  		AddCustId add = new AddCustId(shlDeviceUpdateChecker,SWT.PRIMARY_MODAL | SWT.SHEET);
+				CustIdItem item = (CustIdItem)add.open(models);
 				if (item!=null) {
-					new File(_entry.getDeviceDir()+File.separator+"updates"+File.separator+item.getModel()).mkdir();
-					PropertiesFile pf = new PropertiesFile();
-					pf.setProperty(item.getDef().getValueOf(0), item.getDef().getValueOf(1));
-					pf.setFileName(_entry.getDeviceDir()+File.separator+"updates"+File.separator+item.getModel()+File.separator+"custlist.properties");
-					models.put(item.getModel(), pf);
-					addTab(item.getModel(), pf);
+					ModelUpdater m = new ModelUpdater(item.getDevice(),item.getModel());
+					m.AddCustId(item);
+					addTab(m);
+					btnAdd.setEnabled(m.getDevice().getVariantList().size()!=models.size());
 					btnApply.setEnabled(true);
 				}
 			}
 		});
 		btnAdd.setBounds(10, 10, 93, 25);
 		btnAdd.setText("Add Model");
-		if (_model.length()>0) btnAdd.setEnabled(false);
-		
+		if (models.size()>0) {
+			btnAdd.setEnabled(models.getDevice().getVariantList().size()!=models.size());
+		}
+		else 
+			btnAdd.setEnabled(true);
 		btnApply = new Button(shlDeviceUpdateChecker, SWT.NONE);
 		btnApply.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				Iterator i = models.keySet().iterator();
 				while (i.hasNext()) {
-					PropertiesFile pf = (PropertiesFile)models.get(i.next());
-					pf.write("ISO8859-1");
+					ModelUpdater mu = (ModelUpdater)models.get(i.next());
+					if (mu.isModified())
+						mu.save();
 					btnApply.setEnabled(false);
 				}
 			}
@@ -158,62 +131,24 @@ public class CustIdManager extends Dialog {
 		btnApply.setBounds(279, 272, 75, 25);
 		btnApply.setText("Apply");
 		btnApply.setEnabled(false);
-		fillMap(_model);
 		parseMap();
-	}
-
-	public void fillMap(String model) {
-		if (model.length()==0) {
-		File f = new File(_entry.getDeviceDir()+File.separator+"updates");
-		File[] children = f.listFiles();
-		int nbfolder = 0;
-		for (int i=0;i<children.length;i++) {
-			if (children[i].isDirectory()) {
-				nbfolder++;
-			}
-		}
-		if (nbfolder>0) {
-			for (int i=0;i<children.length;i++) {
-				if (children[i].isDirectory()) {
-					addMap(children[i].getName());
-				}
-			}
-		}
-		}
-		else {
-			addMap(model);
-		}
-	}
-
-	public void addMap(final String tabtitle) {
-		PropertiesFile custlist = new PropertiesFile();
-		String folder = tabtitle.length()>0?tabtitle+File.separator:"";
-		if (new File(_entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"custlist.properties").exists())
-			custlist.open("", _entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"custlist.properties");
-		else {
-			custlist.setFileName(_entry.getDeviceDir()+File.separator+"updates"+File.separator+folder+"custlist.properties");
-			btnApply.setEnabled(true);
-		}
-		models.put(tabtitle, custlist);
 	}
 
 	public void parseMap() {
 		Iterator keys = models.keySet().iterator();
 		while (keys.hasNext()) {
 			String key = (String)keys.next();
-			PropertiesFile pf = (PropertiesFile)models.get(key);
-			addTab(key, pf);
+			ModelUpdater m = (ModelUpdater)models.get(key);
+			addTab(m);
 		}
 	}
 	
-	public void addTab(final String tabtitle, final PropertiesFile pf) {
+	public void addTab(final ModelUpdater m) {
+		models.put(m.getModel(), m);
 		final TableViewer tableViewer = new TableViewer(tabFolder,SWT.FULL_SELECTION | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER | SWT.SINGLE);
-		final CTabItem tabItem = new CTabItem(tabFolder, SWT.NONE);
-		Display.getDefault().asyncExec(
+		Display.getDefault().syncExec(
 				new Runnable() {
 					public void run() {
-						tabItem.setText(tabtitle.length()>0?tabtitle:_entry.getId());
-						
 						tableViewer.setContentProvider(new PropertiesFileContentProvider());
 						tableViewer.setLabelProvider(new VectorLabelProvider());
 						// Create the popup menu
@@ -225,9 +160,9 @@ public class CustIdManager extends Dialog {
 						    	manager.add(new Action("Add") {
 						            public void run() {
 										AddCustId add = new AddCustId(shlDeviceUpdateChecker,SWT.PRIMARY_MODAL | SWT.SHEET);
-										CustIdItem item = (CustIdItem)add.open(tabtitle,null);
+										CustIdItem item = (CustIdItem)add.open(m);
 										if (item != null) {
-											pf.setProperty(item.getDef().getValueOf(0), item.getDef().getValueOf(1));
+											m.AddCustId(item);
 											btnApply.setEnabled(true);
 							            	tableViewer.refresh();
 										}
@@ -238,10 +173,11 @@ public class CustIdManager extends Dialog {
 							            public void run() {
 											AddCustId add = new AddCustId(shlDeviceUpdateChecker,SWT.PRIMARY_MODAL | SWT.SHEET);
 											TableLine line = (TableLine)tableViewer.getTable().getSelection()[0].getData();
-											pf.remove(line.getValueOf(0));
-											CustIdItem item = (CustIdItem)add.open(tabtitle,line);
+											CustIdItem i = new CustIdItem(m.getModel(),line);
+											m.RemoveCustId(line.getValueOf(0));
+											CustIdItem item = (CustIdItem)add.open(m,i);
 											if (item != null) {
-												pf.setProperty(item.getDef().getValueOf(0), item.getDef().getValueOf(1));
+												m.AddCustId(item);
 												btnApply.setEnabled(true);
 								            	tableViewer.refresh();
 											}
@@ -249,17 +185,20 @@ public class CustIdManager extends Dialog {
 							        });
 							    	manager.add(new Action("Delete") {
 							            public void run() {
-							            	pf.remove(((TableLine)tableViewer.getTable().getSelection()[0].getData()).getValueOf(0));
+							            	m.RemoveCustId(((TableLine)tableViewer.getTable().getSelection()[0].getData()).getValueOf(0));
 							            	btnApply.setEnabled(true);
 							            	tableViewer.refresh();
+							            	if (m.getCustIds().getProperties().size()==0)
+							            		tabFolder.getSelection().dispose();
+							            		tabFolder.redraw();
 							            }
 							        });
 						    	}
 						    }
 						  });
 
-						  menuMgr.setRemoveAllWhenShown(true);
-						  tableViewer.getControl().setMenu(menu);
+						menuMgr.setRemoveAllWhenShown(true);
+						tableViewer.getControl().setMenu(menu);
 						Table tableDevice = tableViewer.getTable();
 						TableColumn[] columns = new TableColumn[2];
 						columns[0] = new TableColumn(tableDevice, SWT.NONE);
@@ -271,21 +210,16 @@ public class CustIdManager extends Dialog {
 						TableSorter sort = new TableSorter(tableViewer);
 						tableDevice.setSortColumn(tableDevice.getColumn(0));
 						tableDevice.setSortDirection(SWT.UP);
-						tableViewer.setInput(pf);
-					}
-				}
-		);
-
-		Display.getDefault().asyncExec(
-				new Runnable() {
-					public void run() {
-						tableViewer.setInput(pf);
+						tableViewer.setInput(m.getCustIds());
 						for (int i = 0, n = tableViewer.getTable().getColumnCount(); i < n; i++) {
 							tableViewer.getTable().getColumn(i).pack();
 						}
 						tableViewer.getTable().pack();
 						tableViewer.refresh();
+						final CTabItem tabItem = new CTabItem(tabFolder, SWT.NONE);
+						tabItem.setText(m.getModel());
 						tabItem.setControl(tableViewer.getTable());
+						tabFolder.setSelection(tabItem);
 					}
 				}
 		);

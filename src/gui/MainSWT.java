@@ -62,6 +62,8 @@ import org.system.UpdateURL;
 import flashsystem.Bundle;
 import flashsystem.SinFile;
 import flashsystem.X10flash;
+import gui.models.ModelUpdater;
+import gui.models.Models;
 import gui.tools.APKInstallJob;
 import gui.tools.BackupSystemJob;
 import gui.tools.BackupTAJob;
@@ -523,24 +525,24 @@ public class MainSWT {
 			public void widgetSelected(SelectionEvent e) {
 				String url = WidgetTask.openUpdateURLFeeder(shlSonyericsson);
 				if (url.length()>0) {
+					try {
 					UpdateURL u = new UpdateURL(url);
-					String devId = u.getDeviceID();
-					if (devId.length()>0) {
-						DeviceEntry ent = Devices.getDevice(devId);
-						String path = ent.getDeviceDir()+File.separator+"updates"+File.separator+u.getVariant();
-						try {
-							new File(path).mkdirs();
-							u.dumpTo(path);
-							CustIdManager mng = new CustIdManager(shlSonyericsson,SWT.PRIMARY_MODAL | SWT.SHEET);
-							mng.open(ent,u.getParameter("model"));
-						} catch (Exception ex) {
-							MyLogger.getLogger().error("Failed to write updateurl");
-							ex.printStackTrace();
-						}
+					if (!u.exists()) {
+						u.dumpToFile();
+						CustIdManager mng = new CustIdManager(shlSonyericsson,SWT.PRIMARY_MODAL | SWT.SHEET);
+						ModelUpdater m = new ModelUpdater(u);
+						Models models = new Models(m.getDevice());
+						models.put(m.getModel(), m);
+						mng.open(models);
 					}
-					else {
-						MyLogger.getLogger().error("Model from updateurl not found in FT device database");
+					else MyLogger.getLogger().warn("This updateurl already exists");
+					} catch (Exception e1) {
+						MyLogger.getLogger().error(e1.getMessage());
+						e1.printStackTrace();
 					}
+				}
+				else {
+					MyLogger.getLogger().info("Add update URL canceled");
 				}
 			}
 		});
@@ -561,7 +563,14 @@ public class MainSWT {
 				if (result.length()>0) {
 					DeviceEntry entry = new DeviceEntry(result);
 					CustIdManager mng = new CustIdManager(shlSonyericsson,SWT.PRIMARY_MODAL | SWT.SHEET);
-					mng.open(entry,"");
+					Iterator iv = entry.getVariantList().iterator();
+					Models models = new Models(entry);
+					while (iv.hasNext()) {
+						ModelUpdater m = new ModelUpdater(entry,(String)iv.next());
+						if (m.hasIds())
+							models.put(m.getModel(), m);
+					}
+					mng.open(models);
 				}
 			}
 		});
@@ -639,7 +648,7 @@ public class MainSWT {
 			public void widgetSelected(SelectionEvent e) {
 				Devices.listDevices(true);
         		Properties list = new Properties();
-        		File[] lfiles = new File(OS.getWorkDir()+File.separator+"devices").listFiles();
+        		File[] lfiles = new File(Devices.getDevicesDir()).listFiles();
         		for (int i=0;i<lfiles.length;i++) {
         			if (lfiles[i].getName().endsWith(".ftd")) {
         				String name = lfiles[i].getName();
@@ -1248,12 +1257,12 @@ public class MainSWT {
 	}
 
 	public void doExportDevice(String device) throws Exception {
-		File ftd = new File(OS.getWorkDir()+OS.getFileSeparator()+"devices"+OS.getFileSeparator()+device+".ftd");
+		File ftd = new File(Devices.getDevicesDir()+File.separator+device+".ftd");
 		byte buffer[] = new byte[10240];
 	    FileOutputStream stream = new FileOutputStream(ftd);
 	    JarOutputStream out = new JarOutputStream(stream);
 	    out.setLevel(Deflater.BEST_SPEED);
-	    File root = new File(OS.getWorkDir()+OS.getFileSeparator()+"devices"+OS.getFileSeparator()+device);
+	    File root = new File(Devices.getDevicesDir()+File.separator+device);
 	    int rootindex = root.getAbsolutePath().length();
 		Collection<File> c = OS.listFileTree(root);
 		Iterator<File> i = c.iterator();

@@ -1,9 +1,12 @@
 package org.system;
 
+import gui.models.ModelUpdater;
+import gui.models.Models;
 import gui.tools.WidgetTask;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.Iterator;
 
 import org.adb.AdbUtility;
 import org.eclipse.swt.widgets.Display;
@@ -109,11 +112,15 @@ public class DeviceEntry {
 	}
 	
 	public String getWorkDir() {
-		return OS.getWorkDir()+fsep+"devices"+fsep+getId()+fsep+"work";
+		return Devices.getDevicesDir()+fsep+getId()+fsep+"work";
 	}
 	
 	public String getDeviceDir() {
-		return OS.getWorkDir()+fsep+"devices"+fsep+getId();
+		return Devices.getDevicesDir()+fsep+getId();
+	}
+
+	public String getCustomDeviceDir() {
+		return Devices.getCustomDevicesDir()+fsep+getId();
 	}
 	
 	public String getCleanDir() {
@@ -224,7 +231,7 @@ public class DeviceEntry {
 	}
 
 	public boolean canRecovery() {
-		return (new File(Devices.getCurrent().getDeviceDir()+File.separator+"bootkit").exists());
+		return (new File(getDeviceDir()+File.separator+"bootkit").exists());
 	}
 
 	public boolean canFastboot() {
@@ -284,7 +291,18 @@ public class DeviceEntry {
     }
     
     public boolean canShowUpdates() {
-    	return new File(getDeviceDir()+File.separator+"updates").exists();
+    	return (new File(getDeviceDir()+File.separator+"updates").exists() || new File(getCustomDeviceDir()+File.separator+"updates").exists());
     }
 
+    public Models getUpdatableModels() {
+    	Models m = new Models(this);
+		Iterator ivariants = getVariantList().iterator();
+		while (ivariants.hasNext()) {
+			ModelUpdater mu = new ModelUpdater(this,(String)ivariants.next());
+			if (mu.canCheck()) {
+				m.put(mu.getModel(), mu);
+			}
+		}
+		return m;
+    }
 }
