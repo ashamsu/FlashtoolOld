@@ -35,7 +35,7 @@ public class DevicesGit {
     		ResetCommand reset = git.reset();
     		reset.setMode(ResetType.HARD);
     		reset.setRef(Constants.HEAD);
-    		MyLogger.getLogger().info("Hard reset of devices (removing user modifications");
+    		MyLogger.getLogger().info("Hard reset of devices (removing user modifications)");
     		reset.call();
     		MyLogger.getLogger().info("Pulling changes from github");
     		git.pull().call();
