@@ -12,6 +12,14 @@ import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
 import org.logger.MyLogger;
+import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import static java.nio.file.FileVisitResult.*;
 
 public class DevicesGit {
 
@@ -32,15 +40,19 @@ public class DevicesGit {
     	else {
     		localRepo = new FileRepository(localPath + "/.git");
     		git = new Git(localRepo);
-    		ResetCommand reset = git.reset();
-    		reset.setMode(ResetType.HARD);
-    		reset.setRef(Constants.HEAD);
-    		MyLogger.getLogger().info("Hard reset of devices (removing user modifications)");
-    		reset.call();
+    		MyLogger.getLogger().info("Checking if new files were added to devices out of git files.");
+    		git.add().addFilepattern(".").call();
+    		if (git.status().call().getChanged().size()>0 || git.status().call().getAdded().size()>0 || git.status().call().getModified().size()>0) {
+    			ResetCommand reset = git.reset();
+    			reset.setMode(ResetType.HARD);
+    			reset.setRef(Constants.HEAD);
+    			MyLogger.getLogger().info("Hard reset of devices (removing user modifications)");
+    			reset.call();
+    		}
     		MyLogger.getLogger().info("Pulling changes from github");
     		git.pull().call();
     	}
     	MyLogger.getLogger().info("Devices sync finished.");
     }
-
+ 
 }
