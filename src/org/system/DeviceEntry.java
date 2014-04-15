@@ -290,16 +290,20 @@ public class DeviceEntry {
     	return AdbUtility.getDevices().nextElement();
     }
     
+    public boolean canHandleUpdates() {
+    	return getUpdatableModels(true).size()>0;
+    }
+    
     public boolean canShowUpdates() {
-    	return (new File(getDeviceDir()+File.separator+"updates").exists() || new File(getCustomDeviceDir()+File.separator+"updates").exists());
+    	return getUpdatableModels(false).size()>0;
     }
 
-    public Models getUpdatableModels() {
+    public Models getUpdatableModels(boolean withemptycustid) {
     	Models m = new Models(this);
 		Iterator ivariants = getVariantList().iterator();
 		while (ivariants.hasNext()) {
 			ModelUpdater mu = new ModelUpdater(this,(String)ivariants.next());
-			if (mu.canCheck()) {
+			if (mu.canCheck(withemptycustid)) {
 				m.put(mu.getModel(), mu);
 			}
 		}

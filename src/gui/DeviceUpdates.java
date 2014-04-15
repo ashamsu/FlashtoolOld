@@ -98,7 +98,7 @@ public class DeviceUpdates extends Dialog {
 	}
 
 	public void fillMap() {
-		models = _entry.getUpdatableModels();
+		models = _entry.getUpdatableModels(false);
 	}
 
 	public void addTab(final String tabtitle) {

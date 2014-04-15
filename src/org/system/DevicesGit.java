@@ -2,7 +2,6 @@ package org.system;
 
 import java.io.File;
 import java.io.IOException;
-
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.ResetCommand;
 import org.eclipse.jgit.api.ResetCommand.ResetType;
@@ -11,24 +10,26 @@ import org.eclipse.jgit.api.errors.InvalidRemoteException;
 import org.eclipse.jgit.internal.storage.file.FileRepository;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.transport.JschConfigSessionFactory;
+import org.eclipse.jgit.transport.OpenSshConfig.Host;
+import org.eclipse.jgit.transport.SshSessionFactory;
 import org.logger.MyLogger;
-import java.io.IOException;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import static java.nio.file.FileVisitResult.*;
+import com.jcraft.jsch.Session;
 
 public class DevicesGit {
 
 	private static String localPath=OS.getWorkDir()+File.separator+"devices";
-	private static String remotePath="git://github.com/Androxyde/devices.git";
+	private static String remotePath="https://github.com/Androxyde/devices.git";
     private static Repository localRepo;
     private static Git git;
     
     public static void gitSync() throws IOException, InvalidRemoteException, org.eclipse.jgit.api.errors.TransportException, GitAPIException {
+    	SshSessionFactory.setInstance(new JschConfigSessionFactory() {
+    		  public void configure(Host hc, Session session) {
+    		    session.setConfig("StrictHostKeyChecking", "no");
+    		  };
+    		}
+    	);
     	if (!new File(localPath+File.separator+".git").exists()) {
     		MyLogger.getLogger().info("This is the first sync with devices on github. Renaming devices to devices.old");
 			new File(localPath).renameTo(new File(localPath+".old"));
@@ -40,7 +41,7 @@ public class DevicesGit {
     	else {
     		localRepo = new FileRepository(localPath + "/.git");
     		git = new Git(localRepo);
-    		MyLogger.getLogger().info("Checking if new files were added to devices out of git files.");
+    		MyLogger.getLogger().info("Checking if changes have been made to devices folder.");
     		git.add().addFilepattern(".").call();
     		if (git.status().call().getChanged().size()>0 || git.status().call().getAdded().size()>0 || git.status().call().getModified().size()>0) {
     			ResetCommand reset = git.reset();

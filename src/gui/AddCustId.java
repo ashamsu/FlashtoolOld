@@ -48,6 +48,7 @@ public class AddCustId extends Dialog {
 	 * @return the result
 	 */
 	public Object open(ModelUpdater m) {
+		_models = new Models(m.getDevice());
 		_models.put(m.getModel(), m);
 		showothermodels=false;
 		_entry = m.getDevice();
@@ -56,6 +57,7 @@ public class AddCustId extends Dialog {
 
 	public Object open(ModelUpdater m, CustIdItem i) {
 		result=i;
+		_models = new Models(m.getDevice());
 		_models.put(m.getModel(), m);
 		_entry = m.getDevice();
 		showothermodels=false;

@@ -28,6 +28,10 @@ public class ModelUpdater {
 		_model = u.getVariant();
 		init(Devices.getDevice(u.getDeviceID()),u.getVariant());
 	}
+
+	public ModelUpdater(DeviceEntry entry, String model) {
+		init(entry, model);
+	}
 	
 	public void init(DeviceEntry entry, String model) {
 		try {
@@ -47,17 +51,18 @@ public class ModelUpdater {
 			if (new File(entry.getCustomDeviceDir()+File.separator+"updates"+File.separator+model+File.separator+"custlist.properties").exists()) {
 				PropertiesFile pf = new PropertiesFile();
 				pf.open("", entry.getCustomDeviceDir()+File.separator+"updates"+File.separator+model+File.separator+"custlist.properties");
+				_custid.getProperties().clear();
 				_custid.mergeWith(pf);
 			}
-			if (_url!=null) _model = _url.getVariant(); else _model = model;
+			if (_url!=null) {
+				_model = _url.getVariant();
+			}
+			else _model = model;
 		} catch (Exception ioe) {
 			ioe.printStackTrace();
 		}	
 	}
 
-	public ModelUpdater(DeviceEntry entry, String model) {
-		init(entry, model);
-	}
 
 	public void addURL(String url) {
 		try {
@@ -131,8 +136,8 @@ public class ModelUpdater {
 		_custid.write("ISO8859-15");
 	}
 	
-	public boolean canCheck() {
-		return (_url!=null && _custid.getProperties().size()>0);
+	public boolean canCheck(boolean withemptycustid) {
+		return (_url!=null && (_custid.getProperties().size()>0 || withemptycustid));
 	}
 
 	public boolean hasIds() {

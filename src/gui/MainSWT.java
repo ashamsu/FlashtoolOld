@@ -322,7 +322,7 @@ public class MainSWT {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				try {
-					MyLogger.getLogger().info("Launching Service Menu!");
+					MyLogger.getLogger().info("Launching Service Menu. Plese check on your phone.");
 					AdbUtility.run("am start -a android.intent.action.MAIN -n com.sonyericsson.android.servicemenu/.ServiceMainMenu");
 				}
 				catch (Exception ex) {
@@ -446,7 +446,7 @@ public class MainSWT {
 		});
 		mntmBundleCreation.setText("Create");
 		
-		MenuItem mntmBundleCreationFrom = new MenuItem(menu_12, SWT.NONE);
+		/*MenuItem mntmBundleCreationFrom = new MenuItem(menu_12, SWT.NONE);
 		mntmBundleCreationFrom.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -456,7 +456,7 @@ public class MainSWT {
 					MyLogger.getLogger().info("Bundle creation canceled");
 			}
 		});
-		mntmBundleCreationFrom.setText("Create From Sony DB");
+		mntmBundleCreationFrom.setText("Create From Sony DB");*/
 		
 		mntmAdvanced = new MenuItem(menu, SWT.CASCADE);
 		mntmAdvanced.setText("Advanced");
@@ -513,13 +513,43 @@ public class MainSWT {
 		Menu menu_6 = new Menu(mntmDevices);
 		mntmDevices.setMenu(menu_6);
 		
-		MenuItem mntmUpdates = new MenuItem(menu_6, SWT.CASCADE);
-		mntmUpdates.setText("Updates");
+		MenuItem mntmCheckDrivers = new MenuItem(menu_6, SWT.NONE);
+		mntmCheckDrivers.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Device.CheckAdbDrivers();
+			}
+		});
+		mntmCheckDrivers.setText("Check Drivers");
 		
-		Menu menu_11 = new Menu(mntmUpdates);
-		mntmUpdates.setMenu(menu_11);
+		MenuItem mntmCheck = new MenuItem(menu_6, SWT.NONE);
+		mntmCheck.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				Properties p = new Properties();
+				Enumeration<Object> list = Devices.listDevices(false);
+				while (list.hasMoreElements()) {
+					DeviceEntry entry = Devices.getDevice((String)list.nextElement());
+					if (entry.canShowUpdates())
+						p.setProperty(entry.getId(), entry.getName());
+				}
+				String result = WidgetTask.openDeviceSelector(shlSonyericsson, p);
+				if (result.length()>0) {
+					DeviceEntry entry = new DeviceEntry(result);
+					DeviceUpdates upd = new DeviceUpdates(shlSonyericsson,SWT.PRIMARY_MODAL | SWT.SHEET);
+					upd.open(entry);
+				}
+			}
+		});
+		mntmCheck.setText("Check Updates");
 		
-		MenuItem mntmNewItem_2 = new MenuItem(menu_11, SWT.NONE);
+		MenuItem mntmEditor = new MenuItem(menu_6, SWT.CASCADE);
+		mntmEditor.setText("Manage");
+		
+		Menu menu_7 = new Menu(mntmEditor);
+		mntmEditor.setMenu(menu_7);
+		
+		MenuItem mntmNewItem_2 = new MenuItem(menu_7, SWT.NONE);
 		mntmNewItem_2.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -548,7 +578,7 @@ public class MainSWT {
 		});
 		mntmNewItem_2.setText("Add Update URL");
 		
-		MenuItem mntmCdfidManager = new MenuItem(menu_11, SWT.NONE);
+		MenuItem mntmCdfidManager = new MenuItem(menu_7, SWT.NONE);
 		mntmCdfidManager.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -556,7 +586,7 @@ public class MainSWT {
 				Enumeration<Object> list = Devices.listDevices(false);
 				while (list.hasMoreElements()) {
 					DeviceEntry entry = Devices.getDevice((String)list.nextElement());
-					if (entry.canShowUpdates())
+					if (entry.canHandleUpdates())
 						p.setProperty(entry.getId(), entry.getName());
 				}
 				String result = WidgetTask.openDeviceSelector(shlSonyericsson, p);
@@ -567,50 +597,14 @@ public class MainSWT {
 					Models models = new Models(entry);
 					while (iv.hasNext()) {
 						ModelUpdater m = new ModelUpdater(entry,(String)iv.next());
-						if (m.hasIds())
+						if (m.canCheck(true))
 							models.put(m.getModel(), m);
 					}
 					mng.open(models);
 				}
 			}
 		});
-		mntmCdfidManager.setText("cdfID Manager");
-		
-		MenuItem mntmCheck = new MenuItem(menu_11, SWT.NONE);
-		mntmCheck.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				Properties p = new Properties();
-				Enumeration<Object> list = Devices.listDevices(false);
-				while (list.hasMoreElements()) {
-					DeviceEntry entry = Devices.getDevice((String)list.nextElement());
-					if (entry.canShowUpdates())
-						p.setProperty(entry.getId(), entry.getName());
-				}
-				String result = WidgetTask.openDeviceSelector(shlSonyericsson, p);
-				if (result.length()>0) {
-					DeviceEntry entry = new DeviceEntry(result);
-					DeviceUpdates upd = new DeviceUpdates(shlSonyericsson,SWT.PRIMARY_MODAL | SWT.SHEET);
-					upd.open(entry);
-				}
-			}
-		});
-		mntmCheck.setText("Check");
-		
-		MenuItem mntmCheckDrivers = new MenuItem(menu_6, SWT.NONE);
-		mntmCheckDrivers.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				Device.CheckAdbDrivers();
-			}
-		});
-		mntmCheckDrivers.setText("Check Drivers");
-		
-		MenuItem mntmEditor = new MenuItem(menu_6, SWT.CASCADE);
-		mntmEditor.setText("Manage");
-		
-		Menu menu_7 = new Menu(mntmEditor);
-		mntmEditor.setMenu(menu_7);
+		mntmCdfidManager.setText("cdfID Editor");
 		
 		//MenuItem mntmEdit = new MenuItem(menu_7, SWT.NONE);
 		//mntmEdit.setText("Edit");

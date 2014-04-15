@@ -36,7 +36,6 @@ public class CustIdManager extends Dialog {
 	protected Label lblInfo;
 	protected Models models;
 	protected Button btnApply;
-	protected Button btnAdd;
 
 	/**
 	 * Create the dialog.
@@ -77,7 +76,7 @@ public class CustIdManager extends Dialog {
 		shlDeviceUpdateChecker.setText("cdfID Manager");
 		
 		tabFolder = new CTabFolder(shlDeviceUpdateChecker, SWT.BORDER);
-		tabFolder.setBounds(11, 43, 423, 223);
+		tabFolder.setBounds(11, 10, 423, 256);
 		tabFolder.setSelectionBackground(Display.getCurrent().getSystemColor(SWT.COLOR_TITLE_INACTIVE_BACKGROUND_GRADIENT));				
 		
 		Button btnNewButton = new Button(shlDeviceUpdateChecker, SWT.NONE);
@@ -92,29 +91,6 @@ public class CustIdManager extends Dialog {
 		
 		lblInfo = new Label(shlDeviceUpdateChecker, SWT.NONE);
 		lblInfo.setBounds(11, 244, 342, 15);
-		
-		btnAdd = new Button(shlDeviceUpdateChecker, SWT.NONE);
-		btnAdd.addSelectionListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-		  		AddCustId add = new AddCustId(shlDeviceUpdateChecker,SWT.PRIMARY_MODAL | SWT.SHEET);
-				CustIdItem item = (CustIdItem)add.open(models);
-				if (item!=null) {
-					ModelUpdater m = new ModelUpdater(item.getDevice(),item.getModel());
-					m.AddCustId(item);
-					addTab(m);
-					btnAdd.setEnabled(m.getDevice().getVariantList().size()!=models.size());
-					btnApply.setEnabled(true);
-				}
-			}
-		});
-		btnAdd.setBounds(10, 10, 93, 25);
-		btnAdd.setText("Add Model");
-		if (models.size()>0) {
-			btnAdd.setEnabled(models.getDevice().getVariantList().size()!=models.size());
-		}
-		else 
-			btnAdd.setEnabled(true);
 		btnApply = new Button(shlDeviceUpdateChecker, SWT.NONE);
 		btnApply.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -159,6 +135,7 @@ public class CustIdManager extends Dialog {
 						    public void menuAboutToShow(IMenuManager manager) {
 						    	manager.add(new Action("Add") {
 						            public void run() {
+						            	System.out.println(m.getModel());
 										AddCustId add = new AddCustId(shlDeviceUpdateChecker,SWT.PRIMARY_MODAL | SWT.SHEET);
 										CustIdItem item = (CustIdItem)add.open(m);
 										if (item != null) {
@@ -188,9 +165,6 @@ public class CustIdManager extends Dialog {
 							            	m.RemoveCustId(((TableLine)tableViewer.getTable().getSelection()[0].getData()).getValueOf(0));
 							            	btnApply.setEnabled(true);
 							            	tableViewer.refresh();
-							            	if (m.getCustIds().getProperties().size()==0)
-							            		tabFolder.getSelection().dispose();
-							            		tabFolder.redraw();
 							            }
 							        });
 						    	}
