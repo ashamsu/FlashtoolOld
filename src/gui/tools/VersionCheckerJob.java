@@ -77,7 +77,11 @@ public class VersionCheckerJob extends Job {
 			tr.interrupt();
             if  (tr.get()!=null) {
             	MyLogger.getLogger().debug("Finished resolving github. Result : Success");
-            	URL u = new URL("https://github.com/Androxyde/Flashtool/raw/master/deploy-release.xml");
+            	URL u;
+            	if (About.build.contains("beta"))
+            		u = new URL("https://github.com/Androxyde/Flashtool/raw/master/deploy-beta.xml");
+            	else
+            		u = new URL("https://github.com/Androxyde/Flashtool/raw/master/deploy-release.xml");
             	MyLogger.getLogger().debug("opening connection");
 				if (!aborted)
 					uconn = (HttpURLConnection) u.openConnection();
@@ -141,7 +145,7 @@ public class VersionCheckerJob extends Job {
 		MyLogger.getLogger().debug("Current build : "+About.build);
 		ended = true;
 		if (About.build!=null) {
-			if (latest.length()>0 && !About.build.contains(latest) && !About.build.contains("beta")) {
+			if (latest.length()>0 && !About.build.contains(latest)) {
 				if (_s!=null) {
 					Display.getDefault().syncExec(
 							new Runnable() {
